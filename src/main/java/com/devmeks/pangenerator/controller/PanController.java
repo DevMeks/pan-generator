@@ -21,7 +21,7 @@ public class PanController {
 
 
 
-    @RequestMapping("/generate")
+    @RequestMapping("/generate-pan")
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
     public Mono<String> createPan(@RequestBody RequestDto requestDto){
 
