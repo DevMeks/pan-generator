@@ -55,7 +55,7 @@ Access the application in your web browser at http://localhost:9993.
 Here's an example using cURL:
 ```
 curl -X POST -H "Content-Type: application/json" -d '{
-    "mobileNumber": "07065912640",
+    "mobileNumber": "080XXXXXXXX",
     "cardScheme": "Verve"
 }' http://localhost:9993/api/v1/pan/generate-pan
 ```
