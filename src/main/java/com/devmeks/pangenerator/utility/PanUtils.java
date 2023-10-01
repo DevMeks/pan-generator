@@ -14,7 +14,7 @@ public class PanUtils {
 
     private final BINProperties binProperties;
 
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new Random(System.currentTimeMillis());
 
 
     @Autowired
@@ -62,23 +62,23 @@ public class PanUtils {
     /** This method generates the checksum digit of PAN*/
     public String generateChecksumDigit(String partialCardNumber) {
         int sum = 0;
-        boolean alternate = false;
+        for (int i = 0; i < partialCardNumber.length(); i++) {
 
-        for (int i = partialCardNumber.length() - 1; i >= 0; i--) {
-            int n = Integer.parseInt(partialCardNumber.substring(i, i + 1));
+            // Get the digit at the current position.
+            int digit = Integer.parseInt(partialCardNumber.substring(i, (i + 1)));
 
-            if (alternate) {
-                n *= 2;
-                if (n > 9) {
-                    n = (n % 10) + 1;
+            if ((i % 2) == 0) {
+                digit = digit * 2;
+                if (digit > 9) {
+                    digit = (digit / 10) + (digit % 10);
                 }
             }
-
-            sum += n;
-            alternate = !alternate;
+            sum += digit;
         }
 
-        return  String.valueOf((sum * 9) % 10);
+        // The check digit is the number required to make the sum a multiple of 10.
+        int mod = sum % 10;
+        return String.valueOf ((mod == 0) ? 0 : 10 - mod);
     }
 
 
