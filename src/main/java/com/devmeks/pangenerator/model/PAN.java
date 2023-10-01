@@ -25,4 +25,5 @@ public class PAN {
     private Long id;
     @Column(name = "pan", unique = true, length = 16, nullable = false)
     private String cardNumber;
+
 }

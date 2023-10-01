@@ -23,10 +23,9 @@ public class PanController {
 
     @RequestMapping("/generate")
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
-    public Mono<String> createPan(@RequestBody String mobileNumber,
-                                  @RequestBody String cardScheme){
+    public Mono<String> createPan(@RequestBody RequestDto requestDto){
 
-        return panGenerator.createPan(mobileNumber, cardScheme);
+        return panGenerator.createPanFromMobileNumber(requestDto);
 
 
 
