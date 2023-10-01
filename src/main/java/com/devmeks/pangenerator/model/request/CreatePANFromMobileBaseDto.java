@@ -24,3 +24,5 @@ public class CreatePANFromMobileBaseDto implements BaseDto {
     private String cardScheme;
 
 }
+
+
