@@ -1,6 +1,6 @@
 package com.devmeks.pangenerator.service;
 
-import com.devmeks.pangenerator.model.request.CreatePANFromMobileBaseDto;
+import com.devmeks.pangenerator.model.request.CreatePANFromMobileNumDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,15 +23,16 @@ class PanGeneratorTest {
     @Test
     void createPanFromMobileNumber() {
 
-        CreatePANFromMobileBaseDto createPANFromMobileBaseDto = CreatePANFromMobileBaseDto
+        CreatePANFromMobileNumDto createPANFromMobileNumDto = CreatePANFromMobileNumDto
                 .builder()
                 .mobileNumber("11111111111")
                 .cardScheme("verve")
                 .build();
 
         assertEquals("1111111111111117", Objects.requireNonNull(panGenerator
-                .createPanFromMobileNumber(createPANFromMobileBaseDto)
-                .block()).getPan());
+                .createPanFromMobileNumber(createPANFromMobileNumDto)
+                .block())
+                .getPan());
 
 
     }
@@ -39,13 +40,13 @@ class PanGeneratorTest {
     @Test
     void generateRandomPan() {
 
-        CreatePANFromMobileBaseDto createPANFromMobileBaseDto = CreatePANFromMobileBaseDto
+        CreatePANFromMobileNumDto createPANFromMobileNumDto = CreatePANFromMobileNumDto
                 .builder()
                         .mobileNumber("11111111111")
                                 .cardScheme("verve")
                                         .build();
 
-        assertNotNull(Objects.requireNonNull(panGenerator.generateRandomPan(createPANFromMobileBaseDto)
+        assertNotNull(Objects.requireNonNull(panGenerator.generateRandomPan(createPANFromMobileNumDto)
                 .block()).getPan());
     }
 }

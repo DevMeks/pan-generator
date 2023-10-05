@@ -1,8 +1,9 @@
 package com.devmeks.pangenerator.service;
 
 
-import com.devmeks.pangenerator.model.request.CreatePANFromMobileBaseDto;
+import com.devmeks.pangenerator.model.request.CreatePANFromMobileNumDto;
 import com.devmeks.pangenerator.model.PAN;
+import com.devmeks.pangenerator.model.response.APIError;
 import com.devmeks.pangenerator.model.response.ResponseDto;
 import com.devmeks.pangenerator.repository.PANRepo;
 import com.devmeks.pangenerator.utility.PanUtils;
@@ -15,7 +16,7 @@ import java.util.Objects;
 
 @Service
 @Slf4j
-public final class PanGenerator {
+public class PanGenerator {
     private final PanUtils panUtils;
     private final PANRepo panRepo;
 
@@ -30,38 +31,50 @@ public final class PanGenerator {
 
 
 
+    /** This method was created to generate PAN from a Nigerian mobile
+     * Number. The mobile has to be 11 digits in length*/
+    public Mono<ResponseDto> createPanFromMobileNumber(CreatePANFromMobileNumDto requestDto){
 
-    public Mono<ResponseDto> createPanFromMobileNumber(CreatePANFromMobileBaseDto requestDto){
-
-
-        StringBuilder panBuilder = new StringBuilder();
-        String iin;
-        PAN returnedPANObject;
         ResponseDto responseDto = new ResponseDto();
+        var apiError = APIError.ceateAPIError();
 
-        try{
-            iin = panUtils.retrieveIin(requestDto.getCardScheme());
+        //validate mobile number
+        if(panUtils.isValidMobileNumber(requestDto.getMobileNumber())){
+            StringBuilder panBuilder = new StringBuilder();
+            String iin;
+            PAN returnedPANObject;
 
-            String partialPan = iin + requestDto.getMobileNumber().substring(2);
+            try{
+                iin = panUtils.retrieveIin(requestDto.getCardScheme());
 
-            String pan = panBuilder
-                    .append(partialPan)
-                    .append(panUtils.generateChecksumDigit(partialPan)).toString();
+                String partialPan = iin + requestDto.getMobileNumber().substring(2);
 
-            PAN panObject = PAN.builder()
-                    .cardNumber(pan)
-                    .build();
+                String pan = panBuilder
+                        .append(partialPan)
+                        .append(panUtils.generateChecksumDigit(partialPan)).toString();
+
+                PAN panObject = PAN.builder()
+                        .cardNumber(pan)
+                        .build();
 
 
 
-            returnedPANObject = panRepo.save(panObject);
+                returnedPANObject = panRepo.save(panObject);
 
-        }catch(Exception e){
-            return processException(e, requestDto);
+            }catch(Exception e){
+                return processException(e, requestDto);
+            }
+
+            responseDto.setPan(returnedPANObject.getCardNumber());
+
+            return Mono.just(responseDto);
+
         }
 
-        responseDto.setPan(returnedPANObject.getCardNumber());
+        log.error("Invalid mobile Number provided........{}", requestDto.getMobileNumber());
 
+        apiError.setErrorMessage("Mobile Number is not 11 digits long");
+        responseDto.setError(apiError);
         return Mono.just(responseDto);
 
 
@@ -69,7 +82,7 @@ public final class PanGenerator {
 
 
 
-    public  Mono<ResponseDto> generateRandomPan(CreatePANFromMobileBaseDto requestDto){
+    public  Mono<ResponseDto> generateRandomPan(CreatePANFromMobileNumDto requestDto){
 
         StringBuilder panBuilder = new StringBuilder();
         ResponseDto responseDto = new ResponseDto();
@@ -98,13 +111,15 @@ public final class PanGenerator {
 
 
 
-    private Mono<ResponseDto> processException(Exception e, CreatePANFromMobileBaseDto requestDto){
+    private Mono<ResponseDto> processException(Exception e, CreatePANFromMobileNumDto requestDto){
+
+        var apiError = APIError.ceateAPIError();
+
         log.error("Error Details:........{} exception error",e.getMessage());
-        String exceptionType = e.getClass().toString();
-        int lastDotIndex = exceptionType.lastIndexOf('.');
+        String exceptionType = e.getClass().getSimpleName();
         ResponseDto responseDto = new ResponseDto();
 
-        switch (exceptionType.substring(lastDotIndex + 1)){
+        switch (exceptionType){
             case "DataIntegrityViolationException":
                 log.info("Generating random {} PAN............", requestDto.getCardScheme());
 
@@ -113,18 +128,20 @@ public final class PanGenerator {
             case "NullPointerException":
                 if(Objects.isNull(requestDto.getCardScheme())){
                     log.error("No value has been passed for cardScheme parameter");
-
-                    responseDto.setError("Empty cardScheme parameter");
+                    apiError.setErrorMessage("Empty cardScheme parameter");
+                    responseDto.setError(apiError);
                     return Mono.just(responseDto);
                 }
 
                 log.error("No value passed for mobileNumber parameter");
-                responseDto.setError("Empty mobileNumber parameter");
+                apiError.setErrorMessage("Empty mobileNumber parameter");
+                responseDto.setError(apiError);
 
                 return Mono.just(responseDto);
 
             default:
-                responseDto.setError("An Error occurred");
+                apiError.setErrorMessage("Empty mobileNumber parameter");
+                responseDto.setError(apiError);
                 return Mono.just(responseDto);
 
         }

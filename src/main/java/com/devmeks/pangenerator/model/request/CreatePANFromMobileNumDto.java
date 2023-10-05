@@ -13,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 
-public class CreatePANFromMobileBaseDto implements BaseDto {
+public class CreatePANFromMobileNumDto implements BaseDto {
 
     @JsonProperty("mobileNumber")
     private String mobileNumber;
