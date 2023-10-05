@@ -1,7 +1,7 @@
 package com.devmeks.pangenerator.controller;
 
 
-import com.devmeks.pangenerator.model.request.CreatePANFromMobileBaseDto;
+import com.devmeks.pangenerator.model.request.CreatePANFromMobileNumDto;
 import com.devmeks.pangenerator.model.response.ResponseDto;
 import com.devmeks.pangenerator.service.PanGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class PanController {
 
     @RequestMapping("/generate-pan")
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
-    public Mono<ResponseDto> createPan(@RequestBody CreatePANFromMobileBaseDto requestDto){
+    public Mono<ResponseDto> createPan(@RequestBody CreatePANFromMobileNumDto requestDto){
 
         return panGenerator.createPanFromMobileNumber(requestDto);
 

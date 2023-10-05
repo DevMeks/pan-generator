@@ -59,7 +59,7 @@ public class PanUtils {
     }
 
 
-    /** This method generates the checksum digit of PAN*/
+    /** This method generates the checksum digit of a PAN*/
     public String generateChecksumDigit(String partialCardNumber) {
         int sum = 0;
         for (int i = 0; i < partialCardNumber.length(); i++) {
@@ -79,6 +79,12 @@ public class PanUtils {
         // The check digit is the number required to make the sum a multiple of 10.
         int mod = sum % 10;
         return String.valueOf ((mod == 0) ? 0 : 10 - mod);
+    }
+
+    public boolean isValidMobileNumber(String mobileNumber){
+
+        return mobileNumber.length() == 11;
+
     }
 
 
