@@ -15,55 +15,55 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class PanUtilsTest {
 
-    @Autowired
-    private PanUtils panUtils;
+  @Autowired
+  private PanUtils panUtils;
 
 
-    @Test
-    void testRetrieveIin() {
+  @Test
+  void testRetrieveIin() {
 
-        assertEquals("111111",panUtils.retrieveIin("Verve"));
-
-
-    }
-
-    @Test
-    void testGenerateRandomDigits() {
-        assertNotNull(panUtils.generateRandomDigits());
+    assertEquals("111111", panUtils.retrieveIin("Verve"));
 
 
-    }
+  }
 
-    @Test
-    void testGenerateChecksumDigit() {
-
-        assertEquals("6", panUtils.generateChecksumDigit("111111555555555"));
-
-
-    }
-
-    @Test
-    void testIsValidMobileNumber() {
-
-        assertTrue(panUtils.isValidMobileNumber("08011111111"));
-    }
-
-    @Test
-    void testIsNotValidMobileNumber(){
-        assertFalse(panUtils.isValidMobileNumber("1111111111"));
-    }
-
-    @Test
-    void testProcessResponse() {
-
-        var responseDto = ResponseDto
-                .builder()
-                .pan("2222222222222222")
-                .responseStatus(ResponseStatus.SUCCESSFUL)
-                .build();
+  @Test
+  void testGenerateRandomDigits() {
+    assertNotNull(panUtils.generateRandomDigits());
 
 
-        assertEquals("ResponseEntity", panUtils.processResponse(Mono.just(responseDto))
-                .getClass().getSimpleName());
-    }
+  }
+
+  @Test
+  void testGenerateChecksumDigit() {
+
+    assertEquals("6", panUtils.generateChecksumDigit("111111555555555"));
+
+
+  }
+
+  @Test
+  void testIsValidMobileNumber() {
+
+    assertTrue(panUtils.isValidMobileNumber("08011111111"));
+  }
+
+  @Test
+  void testIsNotValidMobileNumber() {
+    assertFalse(panUtils.isValidMobileNumber("1111111111"));
+  }
+
+  @Test
+  void testProcessResponse() {
+
+    var responseDto = ResponseDto
+        .builder()
+        .pan("2222222222222222")
+        .responseStatus(ResponseStatus.SUCCESSFUL)
+        .build();
+
+
+    assertEquals("ResponseEntity", panUtils.processResponse(Mono.just(responseDto))
+        .getClass().getSimpleName());
+  }
 }
