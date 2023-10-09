@@ -1,6 +1,6 @@
 package com.devmeks.pangenerator.service;
 
-import com.devmeks.pangenerator.model.request.CreatePANFromMobileNumDto;
+import com.devmeks.pangenerator.dto.request.CreatePanFromMobileNumDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +23,7 @@ class PanGeneratorTest {
     @Test
     void createPanFromMobileNumber() {
 
-        CreatePANFromMobileNumDto createPANFromMobileNumDto = CreatePANFromMobileNumDto
+        CreatePanFromMobileNumDto createPANFromMobileNumDto = CreatePanFromMobileNumDto
                 .builder()
                 .mobileNumber("11111111111")
                 .cardScheme("verve")
@@ -40,7 +40,7 @@ class PanGeneratorTest {
     @Test
     void generateRandomPan() {
 
-        CreatePANFromMobileNumDto createPANFromMobileNumDto = CreatePANFromMobileNumDto
+        CreatePanFromMobileNumDto createPANFromMobileNumDto = CreatePanFromMobileNumDto
                 .builder()
                         .mobileNumber("11111111111")
                                 .cardScheme("verve")
