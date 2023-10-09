@@ -1,9 +1,12 @@
-package com.devmeks.pangenerator.utility;
+package com.devmeks.pangenerator.util;
 
+import com.devmeks.pangenerator.dto.response.ResponseDto;
+import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import reactor.core.publisher.Mono;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,5 +51,19 @@ class PanUtilsTest {
     @Test
     void testIsNotValidMobileNumber(){
         assertFalse(panUtils.isValidMobileNumber("1111111111"));
+    }
+
+    @Test
+    void testProcessResponse() {
+
+        var responseDto = ResponseDto
+                .builder()
+                .pan("2222222222222222")
+                .responseStatus(ResponseStatus.SUCCESSFUL)
+                .build();
+
+
+        assertEquals("ResponseEntity", panUtils.processResponse(Mono.just(responseDto))
+                .getClass().getSimpleName());
     }
 }

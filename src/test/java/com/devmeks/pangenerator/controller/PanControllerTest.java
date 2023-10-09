@@ -1,6 +1,7 @@
 package com.devmeks.pangenerator.controller;
 
 import com.devmeks.pangenerator.service.PanGenerator;
+import com.devmeks.pangenerator.util.PanUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,6 +19,9 @@ class PanControllerTest {
 
     @MockBean
     private PanGenerator panGenerator;
+
+    @MockBean
+    private PanUtils panUtils;
 
     @Test
     void createPan() throws Exception {
