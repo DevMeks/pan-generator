@@ -12,7 +12,7 @@ info:
 servers:
 - url: http://localhost:9993
 paths:
-  /generate-pan:
+  /api/v1/pan/generate-pan:
     post:
       tags:
       - Generate Pan
