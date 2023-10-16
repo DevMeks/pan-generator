@@ -46,15 +46,11 @@ public class PanUtils {
    */
   public String retrieveIin(String cardScheme) {
 
-    switch (cardScheme.toLowerCase()) {
-      case "verve":
-        return binProperties.getVerve();
-      case "mastercard":
-        return binProperties.getMastercard();
-      default:
-        return "000000";
-
-    }
+    return switch (cardScheme.toLowerCase()) {
+      case "verve" -> binProperties.getVerve();
+      case "mastercard" -> binProperties.getMastercard();
+      default -> "000000";
+    };
 
 
   }
@@ -83,7 +79,8 @@ public class PanUtils {
 
 
   /**
-   * This method generates the checksum digit of a Pan
+   * This method generates the checksum digit of a Pan.
+   * It is an implementation of the Luhn algorithm
    *
    * @param partialCardNumber the partial card number
    * @return the string

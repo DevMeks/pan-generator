@@ -1,10 +1,9 @@
 package com.devmeks.pangenerator.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
 
 
 /**
