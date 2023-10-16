@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,15 +29,15 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
    */
   ApiError apiError = ApiError.ceateApiError();
 
+
   @Override
-  public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                             HttpHeaders headers,
-                                                             HttpStatus status,
-                                                             WebRequest request) {
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                HttpHeaders headers,
+                                                                HttpStatusCode status,
+                                                                WebRequest request) {
     String errorMessage = ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
     return handleAllExceptions(ex, errorMessage, status);
   }
-
 
   /**
    * Handle all exceptions response entity.
@@ -49,7 +49,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
    */
   public ResponseEntity<Object> handleAllExceptions(Exception ex,
                                                     String errorMessage,
-                                                    HttpStatus status) {
+                                                    HttpStatusCode status) {
 
 
     switch (ex.getClass().getSimpleName()) {

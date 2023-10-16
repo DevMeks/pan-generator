@@ -5,14 +5,12 @@ import com.devmeks.pangenerator.dto.request.CreatePanFromMobileNumDto;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
 import com.devmeks.pangenerator.service.PanGenerator;
 import com.devmeks.pangenerator.util.PanUtils;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 
@@ -49,9 +47,8 @@ public class PanController {
   @RequestMapping("/generate-pan")
   @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE})
-
-
-  public ResponseEntity<Mono<ResponseDto>> createPan(
+  @ResponseStatus(HttpStatus.CREATED)
+  public ResponseEntity<Mono<ResponseDto>> generatePanUsingMobileNumber(
       @Valid @RequestBody CreatePanFromMobileNumDto requestDto) {
 
     var response = panGenerator.createPanFromMobileNumber(requestDto);
