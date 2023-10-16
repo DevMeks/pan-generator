@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * The type Pan generator application.
  */
-@SpringBootApplication
+@SpringBootApplication()
 public class PanGeneratorApplication {
 
   /**

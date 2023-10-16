@@ -10,6 +10,7 @@ import com.devmeks.pangenerator.util.PanUtils;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.LuhnCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -57,9 +58,10 @@ public class PanGenerator {
 
       String partialPan = iin + requestDto.getMobileNumber().substring(2);
 
-      String pan = panBuilder
+      @LuhnCheck String pan = panBuilder
           .append(partialPan)
           .append(panUtils.generateChecksumDigit(partialPan)).toString();
+
 
       Pan panObject = Pan.builder()
           .cardNumber(pan)

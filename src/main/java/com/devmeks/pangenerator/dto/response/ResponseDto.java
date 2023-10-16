@@ -34,7 +34,6 @@ public class ResponseDto implements BaseDto {
   private ResponseStatus responseStatus;
 
   @JsonProperty("error")
-  //@ApiModelProperty(value = "error", example = "ApiError")
   private ApiError error;
 
 }
