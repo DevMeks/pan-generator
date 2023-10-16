@@ -66,7 +66,7 @@ public class SwaggerConfig {
         )
         .addServersItem(new Server().url("http://localhost:9993"))
         .paths(new Paths()
-            .addPathItem("/generate-pan", new PathItem()
+            .addPathItem("/api/v1/pan/generate-pan", new PathItem()
                 .post(new Operation()
                     .description("GENERATES PAN USING MOBILE NUMBER AND CARD SCHEME")
                     .tags(new ArrayList<>() {{
