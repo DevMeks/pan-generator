@@ -77,6 +77,13 @@ curl -X POST -H "Content-Type: application/json" -d '{
 You can customize the microservice's configuration, such as port and database settings,
 by editing the ***application.properties*** file.
 
+## OpenAPI 3.0 Documentation
+
+You can find the OpenAPI 3.0 documentation for the PAN Generator microservice [here](./pan-generator-openapi3_0.yaml).
+
+The OpenAPI documentation provides detailed information about the API endpoints, request and response structures, and how to interact with the PAN Generator.
+
+
 ### Contributing
 
 Contributions are welcome! If you have any ideas for improvements, bug fixes, or new features, please open an issue or
