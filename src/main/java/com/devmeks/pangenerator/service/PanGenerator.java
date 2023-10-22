@@ -1,150 +1,139 @@
 package com.devmeks.pangenerator.service;
 
 
-import com.devmeks.pangenerator.model.request.CreatePANFromMobileNumDto;
-import com.devmeks.pangenerator.model.PAN;
-import com.devmeks.pangenerator.model.response.APIError;
-import com.devmeks.pangenerator.model.response.ResponseDto;
-import com.devmeks.pangenerator.repository.PANRepo;
-import com.devmeks.pangenerator.utility.PanUtils;
+import com.devmeks.pangenerator.dto.request.CreatePanFromMobileNumDto;
+import com.devmeks.pangenerator.dto.response.ResponseDto;
+import com.devmeks.pangenerator.exception.model.ApiError;
+import com.devmeks.pangenerator.model.Pan;
+import com.devmeks.pangenerator.repository.PanRepo;
+import com.devmeks.pangenerator.util.PanUtils;
+import com.devmeks.pangenerator.util.enums.ResponseStatus;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.LuhnCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.Objects;
 
+/**
+ * The type Pan generator.
+ */
 @Service
 @Slf4j
 public class PanGenerator {
-    private final PanUtils panUtils;
-    private final PANRepo panRepo;
+  private final PanUtils panUtils;
+  private final PanRepo panRepo;
 
 
-    @Autowired
-    public PanGenerator(PANRepo panRepo, PanUtils panUtils) {
-        this.panRepo = panRepo;
-        this.panUtils = panUtils;
+  /**
+   * Instantiates a new Pan generator.
+   *
+   * @param panRepo  the pan repo
+   * @param panUtils the pan utils
+   */
+  @Autowired
+  public PanGenerator(PanRepo panRepo, PanUtils panUtils) {
+    this.panRepo = panRepo;
+    this.panUtils = panUtils;
+  }
+
+
+  /**
+   * This method was created to generate Pan from a Nigerian mobile
+   * Number. The mobile has to be 11 digits in length @param requestDto the request dto
+   *
+   * @return the mono
+   */
+  public Mono<ResponseDto> createPanFromMobileNumber(@Valid CreatePanFromMobileNumDto requestDto) {
+    ResponseDto responseDto = new ResponseDto();
+
+
+    StringBuilder panBuilder = new StringBuilder();
+    String iin;
+    Pan returnedPanObject;
+
+    try {
+      iin = panUtils.retrieveIin(requestDto.getCardScheme());
+
+      String partialPan = iin + requestDto.getMobileNumber().substring(2);
+
+      @LuhnCheck String pan = panBuilder
+          .append(partialPan)
+          .append(panUtils.generateChecksumDigit(partialPan)).toString();
+
+
+      Pan panObject = Pan.builder()
+          .cardNumber(pan)
+          .build();
+
+
+      returnedPanObject = panRepo.save(panObject);
+
+    } catch (Exception e) {
+      return processException(e, requestDto);
     }
 
+    responseDto.setPan(returnedPanObject.getCardNumber());
+    responseDto.setResponseStatus(ResponseStatus.SUCCESSFUL);
+
+    return Mono.just(responseDto);
 
 
+  }
 
 
-    /** This method was created to generate PAN from a Nigerian mobile
-     * Number. The mobile has to be 11 digits in length*/
-    public Mono<ResponseDto> createPanFromMobileNumber(CreatePANFromMobileNumDto requestDto){
+  /**
+   * Generate random pan mono.
+   *
+   * @param requestDto the request dto
+   * @return the mono
+   */
+  public Mono<ResponseDto> generateRandomPan(@Valid CreatePanFromMobileNumDto requestDto) {
 
-        ResponseDto responseDto = new ResponseDto();
-        var apiError = APIError.ceateAPIError();
+    StringBuilder panBuilder = new StringBuilder();
+    ResponseDto responseDto = new ResponseDto();
 
-        //validate mobile number
-        if(panUtils.isValidMobileNumber(requestDto.getMobileNumber())){
-            StringBuilder panBuilder = new StringBuilder();
-            String iin;
-            PAN returnedPANObject;
+    String iin = panUtils.retrieveIin(requestDto.getCardScheme());
 
-            try{
-                iin = panUtils.retrieveIin(requestDto.getCardScheme());
+    String partialPan = iin + panUtils.generateRandomDigits().substring(1);
 
-                String partialPan = iin + requestDto.getMobileNumber().substring(2);
+    String pan = panBuilder
+        .append(partialPan)
+        .append(panUtils.generateChecksumDigit(partialPan)).toString();
 
-                String pan = panBuilder
-                        .append(partialPan)
-                        .append(panUtils.generateChecksumDigit(partialPan)).toString();
-
-                PAN panObject = PAN.builder()
-                        .cardNumber(pan)
-                        .build();
+    Pan panObject = Pan.builder()
+        .cardNumber(pan)
+        .build();
 
 
+    Pan returnedPanObject = panRepo.save(panObject);
+    log.info("Random Pan is {}", returnedPanObject.getCardNumber());
 
-                returnedPANObject = panRepo.save(panObject);
+    responseDto.setPan(returnedPanObject.getCardNumber());
+    responseDto.setResponseStatus(ResponseStatus.SUCCESSFUL);
 
-            }catch(Exception e){
-                return processException(e, requestDto);
-            }
+    return Mono.just(responseDto);
 
-            responseDto.setPan(returnedPANObject.getCardNumber());
-
-            return Mono.just(responseDto);
-
-        }
-
-        log.error("Invalid mobile Number provided........{}", requestDto.getMobileNumber());
-
-        apiError.setErrorMessage("Mobile Number is not 11 digits long");
-        responseDto.setError(apiError);
-        return Mono.just(responseDto);
+  }
 
 
+  private Mono<ResponseDto> processException(Exception e, CreatePanFromMobileNumDto requestDto) {
+
+    var apiError = ApiError.ceateApiError();
+
+    log.error("Error Details:........{} exception error", e.getMessage());
+    String exceptionType = e.getClass().getSimpleName();
+    ResponseDto responseDto = new ResponseDto();
+
+    if (exceptionType.equals("DataIntegrityViolationException")) {
+      log.info("Generating random {} Pan............", requestDto.getCardScheme());
+
+      return generateRandomPan(requestDto);
     }
+    apiError.setErrorMessage("Empty mobileNumber parameter");
+    responseDto.setError(apiError);
+    return Mono.just(responseDto);
 
-
-
-    public  Mono<ResponseDto> generateRandomPan(CreatePANFromMobileNumDto requestDto){
-
-        StringBuilder panBuilder = new StringBuilder();
-        ResponseDto responseDto = new ResponseDto();
-
-        String iin = panUtils.retrieveIin(requestDto.getCardScheme());
-
-        String partialPan = iin + panUtils.generateRandomDigits().substring(1);
-
-        String pan = panBuilder
-                .append(partialPan)
-                .append(panUtils.generateChecksumDigit(partialPan)).toString();
-
-        PAN panObject = PAN.builder()
-                .cardNumber(pan)
-                .build();
-
-
-        PAN returnedPANObject = panRepo.save(panObject);
-        log.info("Random PAN is {}", returnedPANObject.getCardNumber());
-
-        responseDto.setPan(returnedPANObject.getCardNumber());
-
-        return Mono.just(responseDto);
-
-    }
-
-
-
-    private Mono<ResponseDto> processException(Exception e, CreatePANFromMobileNumDto requestDto){
-
-        var apiError = APIError.ceateAPIError();
-
-        log.error("Error Details:........{} exception error",e.getMessage());
-        String exceptionType = e.getClass().getSimpleName();
-        ResponseDto responseDto = new ResponseDto();
-
-        switch (exceptionType){
-            case "DataIntegrityViolationException":
-                log.info("Generating random {} PAN............", requestDto.getCardScheme());
-
-                return generateRandomPan(requestDto);
-
-            case "NullPointerException":
-                if(Objects.isNull(requestDto.getCardScheme())){
-                    log.error("No value has been passed for cardScheme parameter");
-                    apiError.setErrorMessage("Empty cardScheme parameter");
-                    responseDto.setError(apiError);
-                    return Mono.just(responseDto);
-                }
-
-                log.error("No value passed for mobileNumber parameter");
-                apiError.setErrorMessage("Empty mobileNumber parameter");
-                responseDto.setError(apiError);
-
-                return Mono.just(responseDto);
-
-            default:
-                apiError.setErrorMessage("Empty mobileNumber parameter");
-                responseDto.setError(apiError);
-                return Mono.just(responseDto);
-
-        }
-
-    }
+  }
 }

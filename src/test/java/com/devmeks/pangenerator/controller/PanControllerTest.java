@@ -1,6 +1,7 @@
 package com.devmeks.pangenerator.controller;
 
 import com.devmeks.pangenerator.service.PanGenerator;
+import com.devmeks.pangenerator.util.PanUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,22 +14,24 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @WebMvcTest(PanController.class)
 class PanControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @MockBean
-    private PanGenerator panGenerator;
+  @MockBean
+  private PanGenerator panGenerator;
 
-    @Test
-    void createPan() throws Exception {
-        String requestBody = "{\"mobileNumber\": \"11111111111\", \"cardScheme\": \"verve\"}";
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan/generate-pan")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string(""));
+  @MockBean
+  private PanUtils panUtils;
+
+  @Test
+  void createPan() throws Exception {
+    String requestBody = "{\"mobileNumber\": \"11111111111\", \"cardScheme\": \"verve\"}";
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan/generate-pan")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+        .andExpect(MockMvcResultMatchers.status().isCreated())
+        .andExpect(MockMvcResultMatchers.content().string(""));
 
 
-
-    }
+  }
 }
