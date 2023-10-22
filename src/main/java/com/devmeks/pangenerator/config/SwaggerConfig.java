@@ -49,6 +49,8 @@ public class SwaggerConfig {
         .cardScheme("Verve")
         .build();
 
+     final String JSON_MEDIA_TYPE = "application/json";
+
 
     return new OpenAPI()
         .info(new Info()
@@ -76,7 +78,7 @@ public class SwaggerConfig {
                         .description("generate pan using mobile number and card scheme")
                         .required(true)
                         .content(new Content()
-                            .addMediaType("application/json",
+                            .addMediaType(JSON_MEDIA_TYPE,
                                 new MediaType()
                                     .example(request)
                                     .schema(new Schema<CreatePanFromMobileNumDto>())))
@@ -86,14 +88,14 @@ public class SwaggerConfig {
                             .addApiResponse("201", new ApiResponse()
                                 .description("Successful Response")
                                 .content(new Content()
-                                    .addMediaType("application/json",
+                                    .addMediaType(JSON_MEDIA_TYPE,
                                         new MediaType()
                                             .example(successfulResponse)
                                     )))
                             .addApiResponse("400", new ApiResponse()
                                 .description("Invalid mobileNumber")
                                 .content(new Content()
-                                    .addMediaType("application/json",
+                                    .addMediaType(JSON_MEDIA_TYPE,
                                         new MediaType()
                                             .example(invalidMobileNumberResponse)
                                     )))
