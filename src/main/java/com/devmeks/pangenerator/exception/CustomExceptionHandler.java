@@ -3,6 +3,7 @@ package com.devmeks.pangenerator.exception;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
 import com.devmeks.pangenerator.exception.model.ApiError;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -33,8 +34,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                 HttpHeaders headers,
-                                                                HttpStatusCode status,
-                                                                WebRequest request) {
+                                                                @NotNull HttpStatusCode status,
+                                                                @NotNull WebRequest request) {
     String errorMessage = ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
     return handleAllExceptions(ex, errorMessage, status);
   }
@@ -53,19 +54,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     switch (ex.getClass().getSimpleName()) {
-      case "NullPointerException":
-        log.error("A null pointer exception has occurred");
-        break;
-      case "ValidationException":
-        log.error("A validation error has occurred");
-        break;
-      case "MethodArgumentNotValidException":
-        log.error("A validation error has occurred: {}...", errorMessage);
-        break;
-      default:
-        log.error("An error of type {} has occurred", ex.getClass().getSimpleName());
-
-
+      case "NullPointerException" -> log.error("A null pointer exception has occurred");
+      case "ValidationException" -> log.error("A validation error has occurred");
+      case "MethodArgumentNotValidException" -> log.error("A validation error has occurred: {}...", errorMessage);
+      default -> log.error("An error of type {} has occurred", ex.getClass().getSimpleName());
     }
     apiError.setErrorMessage(errorMessage);
     errorResponse.setResponseStatus(ResponseStatus.INVALID_REQUEST);
