@@ -6,7 +6,6 @@ import com.devmeks.pangenerator.util.PanUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -45,5 +44,18 @@ class PanControllerTest {
         .andExpect(MockMvcResultMatchers.content().string(""));
 
 
+  }
+
+
+  @Test
+  void createPanInvalidMobileNumber() throws Exception {
+    String requestBody = "{\"mobileNumber\": \"\", \"cardScheme\":  \"verve\"}";
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan/generate-pan")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+        .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+        .andExpect(MockMvcResultMatchers
+            .content()
+            .contentType(MediaType.APPLICATION_JSON));
   }
 }

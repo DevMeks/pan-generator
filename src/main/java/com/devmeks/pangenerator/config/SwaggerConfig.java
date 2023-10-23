@@ -49,7 +49,7 @@ public class SwaggerConfig {
         .cardScheme("Verve")
         .build();
 
-     final String JSON_MEDIA_TYPE = "application/json";
+    final String JSON_MEDIA_TYPE = "application/json";
 
 
     return new OpenAPI()
