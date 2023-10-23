@@ -3,6 +3,7 @@ package com.devmeks.pangenerator.service;
 import com.devmeks.pangenerator.container.PanRepoPostgresqlContainer;
 import com.devmeks.pangenerator.dto.request.CreatePanFromMobileNumDto;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,8 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -23,38 +23,57 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class PanGeneratorTest {
 
   @Container
-  public static PostgreSQLContainer<PanRepoPostgresqlContainer> postgreSQLContainer = PanRepoPostgresqlContainer.getInstance();
+  public static PostgreSQLContainer<PanRepoPostgresqlContainer> postgreSQLContainer
+      = PanRepoPostgresqlContainer.getInstance();
 
   @Autowired
   PanGenerator panGenerator;
 
-  @Test
-  void createPanFromMobileNumber() {
 
-    CreatePanFromMobileNumDto createPANFromMobileNumDto = CreatePanFromMobileNumDto
+  CreatePanFromMobileNumDto getRequestObject(){
+
+    return CreatePanFromMobileNumDto
         .builder()
         .mobileNumber("11111111111")
         .cardScheme("verve")
         .build();
 
+  }
+
+  @Test
+  @Order(value = 1)
+  void createPanFromMobileNumber() {
+
+    String pan = Objects.requireNonNull(panGenerator
+            .createPanFromMobileNumber(getRequestObject())
+            .block())
+        .getPan();
+
+
+
+    assertEquals("1111111111111117", pan);
+
+
+  }
+
+
+  @Test
+  @Order(value = 2)
+  void createRandomPanAfterDuplicateOccurs(){
+
     assertEquals("1111111111111117", Objects.requireNonNull(panGenerator
-            .createPanFromMobileNumber(createPANFromMobileNumDto)
+            .createPanFromMobileNumber(getRequestObject())
             .block())
         .getPan());
-
 
   }
 
   @Test
   void generateRandomPan() {
 
-    CreatePanFromMobileNumDto createPANFromMobileNumDto = CreatePanFromMobileNumDto
-        .builder()
-        .mobileNumber("11111111111")
-        .cardScheme("verve")
-        .build();
 
-    assertNotNull(Objects.requireNonNull(panGenerator.generateRandomPan(createPANFromMobileNumDto)
+
+    assertNotNull(Objects.requireNonNull(panGenerator.generateRandomPan(getRequestObject())
         .block()).getPan());
   }
 }
