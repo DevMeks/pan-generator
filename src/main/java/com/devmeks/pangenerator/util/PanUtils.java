@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.security.SecureRandom;
 import java.util.Objects;
-import java.util.Random;
 
 
 /**
@@ -22,7 +22,10 @@ import java.util.Random;
 @Slf4j
 public class PanUtils {
 
-  private static final Random RANDOM = new Random(System.currentTimeMillis());
+
+  private static final SecureRandom RANDOM =new SecureRandom();
+
+
   private final BinProperties binProperties;
 
 
