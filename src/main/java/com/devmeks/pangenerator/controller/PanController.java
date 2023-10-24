@@ -44,8 +44,9 @@ public class PanController {
    * @param requestDto the request dto
    * @return the response entity
    */
-  @RequestMapping("/generate-pan")
-  @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE},
+  @RequestMapping(path="/generate-pan",
+      method = RequestMethod.POST,
+      consumes = {MediaType.APPLICATION_JSON_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE})
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<Mono<ResponseDto>> generatePanUsingMobileNumber(
