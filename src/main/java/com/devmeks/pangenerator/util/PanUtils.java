@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Objects;
 
@@ -23,7 +23,13 @@ import java.util.Objects;
 public class PanUtils {
 
 
-  private static final SecureRandom RANDOM = new SecureRandom(new byte[]{99,78});
+  private static final SecureRandom RANDOM;
+
+  static {
+    RANDOM = new SecureRandom("abcd12@#bdg545dlghdkflrWQefghijklmnop"
+        .getBytes(StandardCharsets.US_ASCII));
+  }
+
   private final BinProperties binProperties;
 
 
