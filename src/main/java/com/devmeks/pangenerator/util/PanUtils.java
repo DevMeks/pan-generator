@@ -23,7 +23,7 @@ import java.util.Objects;
 public class PanUtils {
 
 
-  private static final SecureRandom RANDOM =new SecureRandom();
+  private static final SecureRandom RANDOM = new SecureRandom();
 
 
   private final BinProperties binProperties;
@@ -64,50 +64,65 @@ public class PanUtils {
    *
    * @return the string
    */
-  public String generateRandomDigits() {
 
-    StringBuilder builder = new StringBuilder();
-
-    for (int i = 0; i < 2; i++) {
-      long m = (long) Math.pow(10, 4);
-      long partialDigits = m + RANDOM.nextInt((int) (9 * m));
-      builder.append(partialDigits);
+  public String generateRandomNumbers(int numRandomNumbers) {
+    if (numRandomNumbers <= 0) {
+      numRandomNumbers = 10;
     }
 
 
-    return builder.toString();
+    StringBuilder randomNumbersString = new StringBuilder();
+
+    for (int i = 0; i < numRandomNumbers; i++) {
+      int randomNumber = RANDOM.nextInt(100); // Generates a random number between 0 and 99
+      randomNumbersString.append(randomNumber);
+    }
 
 
+
+    return randomNumbersString.substring(0,numRandomNumbers);
   }
 
-
   /**
-   * This method generates the checksum digit of a Pan.
-   * It is an implementation of the Luhn algorithm
+   * Generate Luhn check digit string.
    *
    * @param partialCardNumber the partial card number
    * @return the string
    */
-  public String generateChecksumDigit(String partialCardNumber) {
-    int sum = 0;
+
+
+  public  String generateLuhnCheckDigit(String partialCardNumber) {
+    if (partialCardNumber == null)
+      return null;
+    String digit;
+    /* convert to array of int for simplicity */
+    int[] digits = new int[partialCardNumber.length()];
     for (int i = 0; i < partialCardNumber.length(); i++) {
-
-      // Get the digit at the current position.
-      int digit = Integer.parseInt(partialCardNumber.substring(i, (i + 1)));
-
-      if ((i % 2) == 0) {
-        digit = digit * 2;
-        if (digit > 9) {
-          digit = (digit / 10) + (digit % 10);
-        }
-      }
-      sum += digit;
+      digits[i] = Character.getNumericValue(partialCardNumber.charAt(i));
     }
 
-    // The check digit is the number required to make the sum a multiple of 10.
-    int mod = sum % 10;
-    return String.valueOf((mod == 0) ? 0 : 10 - mod);
+    /* double every other starting from right - jumping from 2 in 2 */
+    for (int i = digits.length - 1; i >= 0; i -= 2)    {
+      digits[i] += digits[i];
+
+      /* taking the sum of digits grater than 10 - simple trick by subtract 9 */
+      if (digits[i] >= 10) {
+        digits[i] = digits[i] - 9;
+      }
+    }
+    int sum = 0;
+    for (int j : digits) {
+      sum += j;
+    }
+    /* multiply by 9 step */
+    sum = sum * 9;
+
+    /* convert to string to be easier to take the last digit */
+    digit = sum + "";
+    return digit.substring(digit.length() - 1);
   }
+
+
 
   /**
    * Is valid mobile number boolean.
