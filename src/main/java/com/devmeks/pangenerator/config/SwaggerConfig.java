@@ -65,6 +65,9 @@ public class SwaggerConfig {
 
     final String JSON_MEDIA_TYPE = "application/json";
 
+    var tagsList = new ArrayList<String>();
+    tagsList.add("Generate Pan");
+
 
     return new OpenAPI()
         .info(new Info()
@@ -85,9 +88,7 @@ public class SwaggerConfig {
             .addPathItem("/api/v1/pan-generator/mobile/pan", new PathItem()
                 .post(new Operation()
                     .description("GENERATES PAN USING MOBILE NUMBER AND CARD SCHEME")
-                    .tags(new ArrayList<>() {{
-                      add("Generate Pan");
-                    }})
+                    .tags(tagsList)
                     .requestBody(new RequestBody()
                         .description("generate pan using mobile number and card scheme")
                         .required(true)
@@ -125,9 +126,7 @@ public class SwaggerConfig {
                 )).addPathItem("/api/v1/pan-generator/random/pan", new PathItem()
                 .post(new Operation()
                     .description("GENERATES RANDOM PAN FOR PROVIDED CARD SCHEME")
-                    .tags(new ArrayList<>() {{
-                      add("Generate Pan");
-                    }})
+                    .tags(tagsList)
                     .requestBody(new RequestBody()
                         .description("generate random pan for provided card scheme")
                         .required(true)
