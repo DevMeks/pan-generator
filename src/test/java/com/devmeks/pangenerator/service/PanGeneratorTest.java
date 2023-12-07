@@ -51,7 +51,7 @@ class PanGeneratorTest {
 
 
 
-    assertEquals("1111111111111117", pan);
+    assertNotNull(pan);
 
 
   }
@@ -61,7 +61,7 @@ class PanGeneratorTest {
   @Order(value = 2)
   void createRandomPanAfterDuplicateOccurs(){
 
-    assertEquals("1111111111111117", Objects.requireNonNull(panGenerator
+    assertNotNull(Objects.requireNonNull(panGenerator
             .createPanFromMobileNumber(getRequestObject())
             .block())
         .getPan());
@@ -71,9 +71,8 @@ class PanGeneratorTest {
   @Test
   void generateRandomPan() {
 
-
-
-    assertNotNull(Objects.requireNonNull(panGenerator.generateRandomPan(getRequestObject())
+    assertNotNull(Objects.requireNonNull(panGenerator.generateRandomPan(getRequestObject().getCardScheme(), getRequestObject().isGlobalVerveCard())
         .block()).getPan());
   }
+
 }

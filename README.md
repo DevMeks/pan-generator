@@ -57,14 +57,16 @@ Access the application in your web browser at http://localhost:9993.
 
 ## Usage
 
-1. Send HTTP POST requests to the microservice's API endpoint to generate PANs.
+1. Send HTTP POST requests to the microservice's API endpoint to generate PANs 
+   using the provided mobile number.
    Here's an example using cURL:
 
 ```
 curl -X POST -H "Content-Type: application/json" -d '{
     "mobileNumber": "080XXXXXXXX",
-    "cardScheme": "Verve"
-}' http://localhost:9993/api/v1/pan/generate-pan
+    "cardScheme": "Verve",
+    isGlobalVerveCard": "true"
+}' http://localhost:9993/api/v1/pan-generator/mobile/pan
 ```
 
 2. The microservice will respond with a JSON object containing the generated

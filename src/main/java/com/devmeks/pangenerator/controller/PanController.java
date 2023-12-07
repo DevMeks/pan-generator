@@ -1,6 +1,7 @@
 package com.devmeks.pangenerator.controller;
 
 
+import com.devmeks.pangenerator.dto.request.CreatePanDto;
 import com.devmeks.pangenerator.dto.request.CreatePanFromMobileNumDto;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
 import com.devmeks.pangenerator.service.PanGenerator;
@@ -18,7 +19,7 @@ import reactor.core.publisher.Mono;
  * The type Pan controller.
  */
 @RestController
-@RequestMapping("/api/v1/pan")
+@RequestMapping("/api/v1/pan-generator")
 public class PanController {
 
   private final PanGenerator panGenerator;
@@ -40,19 +41,34 @@ public class PanController {
 
   /**
    * Create pan response entity .
-   *
+   * This controller method generates a PAN using the mobile number
+   * and card scheme provided
    * @param requestDto the request dto
    * @return the response entity
    */
-  @RequestMapping(path="/generate-pan",
+  @RequestMapping(path = "/mobile/pan",
       method = RequestMethod.POST,
       consumes = {MediaType.APPLICATION_JSON_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE})
   @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEntity<Mono<ResponseDto>> generatePanUsingMobileNumber(
+  public ResponseEntity<Mono<ResponseDto>> generatePanUsingMobileNumberForSpecifiedCardScheme(
       @Valid @RequestBody CreatePanFromMobileNumDto requestDto) {
 
     var response = panGenerator.createPanFromMobileNumber(requestDto);
+    return panUtils.processResponse(response);
+
+  }
+
+
+  @RequestMapping(path = "/random/pan",
+      method = RequestMethod.POST,
+      consumes = {MediaType.APPLICATION_JSON_VALUE},
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  @ResponseStatus(HttpStatus.CREATED)
+  public ResponseEntity<Mono<ResponseDto>> generatePanForSpecifiedCardScheme(
+      @Valid @RequestBody CreatePanDto requestDto) {
+    var response = panGenerator.generateRandomPan(requestDto.getCardScheme(),
+        requestDto.isGlobalVerveCard());
     return panUtils.processResponse(response);
 
 

@@ -1,46 +1,136 @@
-openapi: 3.0.1
-info:
-  title: Pan Generator API
-  description: Generates PAN for different card schemes
-  contact:
-    name: Chukwuemeka Vin-Anuonye
-    email: chib.vinan@gmail.com
-  license:
-    name: Terms of Use
-    url: https://github.com/git/git-scm.com/blob/main/MIT-LICENSE.txt
-  version: v1.0
-servers:
-- url: http://localhost:9993
-paths:
-  /api/v1/pan/generate-pan:
-    post:
-      tags:
-      - Generate Pan
-      description: GENERATES PAN USING MOBILE NUMBER AND CARD SCHEME
-      requestBody:
-        description: generate pan using mobile number and card scheme
-        content:
-          application/json:
-            schema:
-              type: object
-            example:
-              mobileNumber: 080XXXXXXXX
-              cardScheme: Verve
-        required: true
-      responses:
-        "201":
-          description: Successful Response
-          content:
-            application/json:
-              example:
-                pan: "5555555555555555"
-                responseStatus: SUCCESSFUL
-        "400":
-          description: Invalid mobileNumber
-          content:
-            application/json:
-              example:
-                responseStatus: INVALID_REQUEST
-                error:
-                  errorMessage: MobileNumber must be 11 digits long
-components: {}
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Pan Generator API",
+    "description": "Generates PAN for different card schemes",
+    "contact": {
+      "name": "Chukwuemeka Vin-Anuonye",
+      "email": "chib.vinan@gmail.com"
+    },
+    "license": {
+      "name": "Terms of Use",
+      "url": "https://github.com/git/git-scm.com/blob/main/MIT-LICENSE.txt"
+    },
+    "version": "v1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:9993"
+    }
+  ],
+  "paths": {
+    "/api/v1/pan-generator/mobile/pan": {
+      "post": {
+        "tags": [
+          "Generate Pan"
+        ],
+        "description": "GENERATES PAN USING MOBILE NUMBER AND CARD SCHEME",
+        "requestBody": {
+          "description": "generate pan using mobile number and card scheme",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "mobileNumber": "080XXXXXXXX",
+                "cardScheme": "Verve",
+                "isGlobalVerveCard": false
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "pan": "5555555555555555",
+                  "responseStatus": "SUCCESSFUL"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid mobileNumber",
+            "content": {
+              "application/json": {
+                "example": {
+                  "responseStatus": "INVALID_REQUEST",
+                  "error": {
+                    "errorMessage": "MobileNumber must be 11 digits long"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing card scheme",
+            "content": {
+              "application/json": {
+                "example": {
+                  "responseStatus": "INVALID_REQUEST",
+                  "error": {
+                    "errorMessage": "cardScheme should not be empty"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pan-generator/random/pan": {
+      "post": {
+        "tags": [
+          "Generate Pan"
+        ],
+        "description": "GENERATES RANDOM PAN FOR PROVIDED CARD SCHEME",
+        "requestBody": {
+          "description": "generate random pan for provided card scheme",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "cardScheme": "Verve",
+                "isGlobalVerveCard": true
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "pan": "5555555555555555",
+                  "responseStatus": "SUCCESSFUL"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing card scheme",
+            "content": {
+              "application/json": {
+                "example": {
+                  "responseStatus": "INVALID_REQUEST",
+                  "error": {
+                    "errorMessage": "cardScheme should not be empty"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {}
+}

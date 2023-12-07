@@ -35,9 +35,9 @@ class PanControllerTest {
   private PanUtils panUtils;
 
   @Test
-  void createPan() throws Exception {
+  void createPanForProvidedSchemeUsingMobileNumber() throws Exception {
     String requestBody = "{\"mobileNumber\": \"11111111111\", \"cardScheme\": \"verve\"}";
-    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan/generate-pan")
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan-generator/mobile/pan")
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestBody))
         .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -46,11 +46,40 @@ class PanControllerTest {
 
   }
 
+  @Test
+  void createLocalPanForVerveSchemeUsingMobileNumber() throws Exception {
+    String requestBody = """
+        {
+            "mobileNumber": "08721356987",
+            "cardScheme": "Verve",
+            "isGlobalVerveCard": "false"
+        }""";
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan-generator/mobile/pan")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+        .andExpect(MockMvcResultMatchers.status().isCreated())
+        .andExpect(MockMvcResultMatchers.content().string(""));
+
+
+  }
+
+  @Test
+  void createRandomPanForSpecifiedCardScheme() throws Exception{
+    String requestBody = "{\"cardScheme\": \"verve\"}";
+    mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/pan-generator/random/pan")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+        .andExpect(MockMvcResultMatchers.status().isCreated())
+        .andExpect(MockMvcResultMatchers.content().string(""));
+
+  }
+
 
   @Test
   void createPanInvalidMobileNumber() throws Exception {
     String requestBody = "{\"mobileNumber\": \"\", \"cardScheme\":  \"verve\"}";
-    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan/generate-pan")
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan-generator/mobile/pan")
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestBody))
         .andExpect(MockMvcResultMatchers.status().is4xxClientError())
@@ -58,4 +87,7 @@ class PanControllerTest {
             .content()
             .contentType(MediaType.APPLICATION_JSON));
   }
+
+
+
 }

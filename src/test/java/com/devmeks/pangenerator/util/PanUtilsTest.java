@@ -37,7 +37,7 @@ class PanUtilsTest {
 
   @Test
   void testGenerateRandomDigits() {
-    assertNotNull(panUtils.generateRandomDigits());
+    assertNotNull(panUtils.generateRandomNumbers(10));
 
 
   }
@@ -45,7 +45,7 @@ class PanUtilsTest {
   @Test
   void testGenerateChecksumDigit() {
 
-    assertEquals("6", panUtils.generateChecksumDigit("111111555555555"));
+    assertEquals("6", panUtils.generateLuhnCheckDigit("111111555555555"));
 
 
   }

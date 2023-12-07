@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.validator.constraints.LuhnCheck;
 
 
 /**
@@ -23,7 +24,8 @@ public class Pan {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, updatable = false)
   private Long id;
-  @Column(name = "pan", unique = true, length = 16, nullable = false)
+  @Column(name = "pan", unique = true, length = 19, nullable = false)
+  @LuhnCheck
   private String cardNumber;
 
 }
