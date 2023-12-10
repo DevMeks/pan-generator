@@ -24,7 +24,9 @@
         "tags": [
           "Generate Pan"
         ],
+        "summary": "This operation generates a PAN for the specified card scheme using the mobile number provided",
         "description": "GENERATES PAN USING MOBILE NUMBER AND CARD SCHEME",
+        "operationId": "01",
         "requestBody": {
           "description": "generate pan using mobile number and card scheme",
           "content": {
@@ -87,7 +89,9 @@
         "tags": [
           "Generate Pan"
         ],
+        "summary": "This operation generates a random PAN for the supplied card schme",
         "description": "GENERATES RANDOM PAN FOR PROVIDED CARD SCHEME",
+        "operationId": "02",
         "requestBody": {
           "description": "generate random pan for provided card scheme",
           "content": {

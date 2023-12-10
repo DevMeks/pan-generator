@@ -89,6 +89,9 @@ public class SwaggerConfig {
                 .post(new Operation()
                     .description("GENERATES PAN USING MOBILE NUMBER AND CARD SCHEME")
                     .tags(tagsList)
+                    .operationId("01")
+                    .summary("This operation generates a PAN for the specified card scheme" +
+                        " using the mobile number provided")
                     .requestBody(new RequestBody()
                         .description("generate pan using mobile number and card scheme")
                         .required(true)
@@ -127,6 +130,8 @@ public class SwaggerConfig {
                 .post(new Operation()
                     .description("GENERATES RANDOM PAN FOR PROVIDED CARD SCHEME")
                     .tags(tagsList)
+                    .operationId("02")
+                    .summary("This operation generates a random PAN for the supplied card scheme")
                     .requestBody(new RequestBody()
                         .description("generate random pan for provided card scheme")
                         .required(true)

@@ -53,12 +53,12 @@ class PanUtilsTest {
   @Test
   void testIsValidMobileNumber() {
 
-    assertTrue(panUtils.isValidMobileNumber("08011111111"));
+    assertTrue(panUtils.isMobileNumberValid("08011111111"));
   }
 
   @Test
   void testIsNotValidMobileNumber() {
-    assertFalse(panUtils.isValidMobileNumber("1111111111"));
+    assertFalse(panUtils.isMobileNumberValid("1111111111"));
   }
 
   @Test

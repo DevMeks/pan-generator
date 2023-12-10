@@ -4,15 +4,14 @@ package com.devmeks.pangenerator.util;
 import com.devmeks.pangenerator.config.BinProperties;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
+import java.security.SecureRandom;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
-import java.security.SecureRandom;
-import java.util.Objects;
 
 
 /**
@@ -41,8 +40,7 @@ public class PanUtils {
 
 
   /**
-   * Retrieves the BIN from the property file based on the card
-   * scheme provided
+   * Retrieve iin string.
    *
    * @param cardScheme the card scheme
    * @return the string
@@ -59,42 +57,42 @@ public class PanUtils {
   }
 
   /**
-   * This method generates random digits of length 10. It generates it in two parts of 5
-   * to further increase the chance of a random Pan being generated
+   * Generate random numbers string.
    *
+   * @param numberOfRequiredRandomNumbers the number of required random numbers
    * @return the string
    */
-
-  public String generateRandomNumbers(int numRandomNumbers) {
-    if (numRandomNumbers <= 0) {
-      numRandomNumbers = 10;
+  public String generateRandomNumbers(int numberOfRequiredRandomNumbers) {
+    if (numberOfRequiredRandomNumbers <= 0) {
+      numberOfRequiredRandomNumbers = 10;
     }
 
 
     StringBuilder randomNumbersString = new StringBuilder();
 
-    for (int i = 0; i < numRandomNumbers; i++) {
+    for (int i = 0; i < numberOfRequiredRandomNumbers; i++) {
       int randomNumber = RANDOM.nextInt(100); // Generates a random number between 0 and 99
       randomNumbersString.append(randomNumber);
     }
 
 
 
-    return randomNumbersString.substring(0,numRandomNumbers);
+    return randomNumbersString.substring(0, numberOfRequiredRandomNumbers);
   }
 
+
   /**
-   * Generate Luhn check digit string.
+   * Generate luhn check digit string.
    *
    * @param partialCardNumber the partial card number
    * @return the string
    */
-
-
   public  String generateLuhnCheckDigit(String partialCardNumber) {
-    if (partialCardNumber == null)
+    if (partialCardNumber == null) {
       return null;
-    String digit;
+
+    }
+
     /* convert to array of int for simplicity */
     int[] digits = new int[partialCardNumber.length()];
     for (int i = 0; i < partialCardNumber.length(); i++) {
@@ -104,7 +102,6 @@ public class PanUtils {
     /* double every other starting from right - jumping from 2 in 2 */
     for (int i = digits.length - 1; i >= 0; i -= 2)    {
       digits[i] += digits[i];
-
       /* taking the sum of digits grater than 10 - simple trick by subtract 9 */
       if (digits[i] >= 10) {
         digits[i] = digits[i] - 9;
@@ -117,20 +114,21 @@ public class PanUtils {
     /* multiply by 9 step */
     sum = sum * 9;
 
+    String digit;
+
     /* convert to string to be easier to take the last digit */
     digit = sum + "";
     return digit.substring(digit.length() - 1);
   }
 
 
-
   /**
-   * Is valid mobile number boolean.
+   * Is mobile number valid boolean.
    *
    * @param mobileNumber the mobile number
    * @return the boolean
    */
-  public boolean isValidMobileNumber(String mobileNumber) {
+  public boolean isMobileNumberValid(String mobileNumber) {
 
     return mobileNumber.length() == 11;
 
@@ -138,7 +136,7 @@ public class PanUtils {
 
 
   /**
-   * This method processes the response from the Pan creation process
+   * Process response response entity.
    *
    * @param monoResponse the mono response
    * @return the response entity
