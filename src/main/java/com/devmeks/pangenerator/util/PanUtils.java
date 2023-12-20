@@ -82,7 +82,7 @@ public class PanUtils {
 
 
   /**
-   * Generate luhn check digit string.
+   * Generate Luhn check digit string.
    *
    * @param partialCardNumber the partial card number
    * @return the string
@@ -155,6 +155,19 @@ public class PanUtils {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(monoResponse);
 
   }
+
+  public String generateTransactionId() {
+    StringBuilder generatedTransactionId = new StringBuilder();
+
+    for (int i = 0; i < 14; i++) {
+      generatedTransactionId.append(RANDOM.nextInt(9));
+    }
+
+
+    return generatedTransactionId.toString();
+  }
+
+
 
 
 }

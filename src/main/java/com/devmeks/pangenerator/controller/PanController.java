@@ -7,6 +7,7 @@ import com.devmeks.pangenerator.dto.response.ResponseDto;
 import com.devmeks.pangenerator.service.PanGenerator;
 import com.devmeks.pangenerator.util.PanUtils;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import reactor.core.publisher.Mono;
  */
 @RestController
 @RequestMapping("/api/v1/pan-generator")
+@Slf4j
 public class PanController {
 
   private final PanGenerator panGenerator;
@@ -46,13 +48,13 @@ public class PanController {
    * @param requestDto the request dto
    * @return the response entity
    */
-  @RequestMapping(path = "/mobile/pan",
-      method = RequestMethod.POST,
-      consumes = {MediaType.APPLICATION_JSON_VALUE},
-      produces = {MediaType.APPLICATION_JSON_VALUE})
+  @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE},
+      produces = {MediaType.APPLICATION_JSON_VALUE},
+      path = "/mobile/pan")
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<Mono<ResponseDto>> generatePanUsingMobileNumberForSpecifiedCardScheme(
       @Valid @RequestBody CreatePanFromMobileNumDto requestDto) {
+    log.info("REQUEST FROM CALLER IS:: {}", requestDto);
 
     var response = panGenerator.createPanFromMobileNumber(requestDto);
     return panUtils.processResponse(response);
@@ -60,10 +62,9 @@ public class PanController {
   }
 
 
-  @RequestMapping(path = "/random/pan",
-      method = RequestMethod.POST,
-      consumes = {MediaType.APPLICATION_JSON_VALUE},
-      produces = {MediaType.APPLICATION_JSON_VALUE})
+  @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE},
+      produces = {MediaType.APPLICATION_JSON_VALUE},
+      path = "/random/pan")
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<Mono<ResponseDto>> generatePanForSpecifiedCardScheme(
       @Valid @RequestBody CreatePanDto requestDto) {
