@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PanUtilsTest {
 
   @Container
-  public static PostgreSQLContainer postgreSQLContainer = PanRepoPostgresqlContainer.getInstance();
+  public static PostgreSQLContainer<PanRepoPostgresqlContainer> postgreSQLContainer = PanRepoPostgresqlContainer.getInstance();
 
   @Autowired
   private PanUtils panUtils;
@@ -73,5 +73,11 @@ class PanUtilsTest {
 
     assertEquals("ResponseEntity", panUtils.processResponse(Mono.just(responseDto))
         .getClass().getSimpleName());
+  }
+
+
+  @Test
+  void testGenerateTransactionId(){
+    assertNotNull(panUtils.generateTransactionId());
   }
 }
