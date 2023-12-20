@@ -41,9 +41,9 @@ public class PanGenerator {
 
 
   /**
-   * This method was created to generate Pan from a Nigerian mobile
-   * Number. The mobile has to be 11 digits in length @param requestDto the request dto
+   * Create pan from mobile number mono.
    *
+   * @param requestDto the request dto
    * @return the mono
    */
   public Mono<ResponseDto> createPanFromMobileNumber(@Valid CreatePanFromMobileNumDto requestDto) {
@@ -115,7 +115,8 @@ public class PanGenerator {
   /**
    * Generate random pan mono.
    *
-   * @param cardScheme the card scheme
+   * @param cardScheme    the card scheme
+   * @param isGlobalVerve the is global verve
    * @return the mono
    */
   public Mono<ResponseDto> generateRandomPan(String cardScheme, boolean isGlobalVerve) {
@@ -170,6 +171,7 @@ public class PanGenerator {
     String exceptionType = e.getClass().getSimpleName();
     ResponseDto responseDto = new ResponseDto();
 
+    //if pan exists generate new random pan
     if (exceptionType.equals("DataIntegrityViolationException")) {
       log.info("Generating random {} Pan............", requestDto.getCardScheme());
 
