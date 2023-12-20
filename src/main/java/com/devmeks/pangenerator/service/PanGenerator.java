@@ -171,6 +171,7 @@ public class PanGenerator {
     String exceptionType = e.getClass().getSimpleName();
     ResponseDto responseDto = new ResponseDto();
 
+    //if pan exists generate new random pan
     if (exceptionType.equals("DataIntegrityViolationException")) {
       log.info("Generating random {} Pan............", requestDto.getCardScheme());
 
