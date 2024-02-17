@@ -74,4 +74,10 @@ class PanGeneratorTest {
         .block()).getPan());
   }
 
+
+  @Test
+  void getPans(){
+    assertNotNull(panGenerator.getPans(1,1));
+  }
+
 }
