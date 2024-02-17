@@ -77,7 +77,7 @@ class PanUtilsTest {
 
 
   @Test
-  void testGenerateTransactionId(){
+  void testGenerateTransactionId() {
     assertNotNull(panUtils.generateTransactionId());
   }
 }

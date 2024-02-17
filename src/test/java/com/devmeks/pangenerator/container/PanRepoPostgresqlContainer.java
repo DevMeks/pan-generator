@@ -32,6 +32,4 @@ public class PanRepoPostgresqlContainer extends PostgreSQLContainer<PanRepoPostg
   }
 
 
-
-
 }

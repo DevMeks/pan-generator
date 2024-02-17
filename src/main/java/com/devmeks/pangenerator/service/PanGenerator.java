@@ -21,10 +21,10 @@ import reactor.core.publisher.Mono;
 @Service
 @Slf4j
 public class PanGenerator {
-  private final PanUtils panUtils;
-  private final PanRepo panRepo;
   private static final int PARTIAL_LENGTH_OF_LOCAL_VERVE_CARD = 18;
   private static final int PARTIAL_LENGTH_OF_CARD = 15;
+  private final PanUtils panUtils;
+  private final PanRepo panRepo;
 
 
   /**
@@ -57,15 +57,15 @@ public class PanGenerator {
       bankBin = panUtils.retrieveIin(requestDto.getCardScheme());
       partialPan = bankBin + requestDto.getMobileNumber().substring(2);
 
-      //cater for 19 digit PAN length for verve card scheme
+      //caters for 19 digit PAN length for verve card scheme
       if (requestDto.getCardScheme().equalsIgnoreCase("verve") &&
           !(requestDto.isGlobalVerveCard())
       ) {
-        partialPan = getPartialCardNumber(partialPan,partialPan.length(),PARTIAL_LENGTH_OF_LOCAL_VERVE_CARD);
+        partialPan = getPartialCardNumber(partialPan, partialPan.length(), PARTIAL_LENGTH_OF_LOCAL_VERVE_CARD);
       }
       //caters for 16 digit PAN length
       else {
-        partialPan = getPartialCardNumber(partialPan,partialPan.length(),PARTIAL_LENGTH_OF_CARD);
+        partialPan = getPartialCardNumber(partialPan, partialPan.length(), PARTIAL_LENGTH_OF_CARD);
 
       }
 
@@ -89,12 +89,14 @@ public class PanGenerator {
     responseDto.setPan(returnedPanObject.getCardNumber());
     responseDto.setResponseStatus(ResponseStatus.SUCCESSFUL);
 
+    log.info("RESPONSE TO CALLER IS:: {}", responseDto);
+
     return Mono.just(responseDto);
 
 
   }
 
-  private String getPartialCardNumber(String panWithoutCheckDigit,int partialPanLength, int maxPartialPanLength){
+  private String getPartialCardNumber(String panWithoutCheckDigit, int partialPanLength, int maxPartialPanLength) {
     int requiredRandomNumbers = maxPartialPanLength - partialPanLength;
 
 
@@ -102,7 +104,7 @@ public class PanGenerator {
       panWithoutCheckDigit = panWithoutCheckDigit.substring(0, maxPartialPanLength);
     } else if (panWithoutCheckDigit.length() < maxPartialPanLength) {
       panWithoutCheckDigit = panWithoutCheckDigit
-          +panUtils.generateRandomNumbers(requiredRandomNumbers);
+          + panUtils.generateRandomNumbers(requiredRandomNumbers);
 
     }
 
@@ -150,13 +152,12 @@ public class PanGenerator {
         .build();
 
 
-
-
     Pan returnedPanObject = panRepo.save(panObject);
     log.info("Random Pan is {}", returnedPanObject.getCardNumber());
 
     responseDto.setPan(returnedPanObject.getCardNumber());
     responseDto.setResponseStatus(ResponseStatus.SUCCESSFUL);
+    log.info("RESPONSE TO CALLER IS:: {}", responseDto);
 
     return Mono.just(responseDto);
 

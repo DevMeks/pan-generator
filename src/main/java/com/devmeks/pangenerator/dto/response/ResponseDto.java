@@ -19,7 +19,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-
 public class ResponseDto implements BaseDto {
 
   @JsonProperty("pan")
@@ -36,4 +35,12 @@ public class ResponseDto implements BaseDto {
   @JsonProperty("error")
   private ApiError error;
 
+  @Override
+  public String toString() {
+    return "ResponseDto{" +
+        "pan:'" + pan + '\'' +
+        ", responseStatus:" + responseStatus +
+        ", error:" + error +
+        '}';
+  }
 }

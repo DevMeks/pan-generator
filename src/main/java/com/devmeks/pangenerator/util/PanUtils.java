@@ -4,14 +4,15 @@ package com.devmeks.pangenerator.util;
 import com.devmeks.pangenerator.config.BinProperties;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
-import java.security.SecureRandom;
-import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+
+import java.security.SecureRandom;
+import java.util.Objects;
 
 
 /**
@@ -76,7 +77,6 @@ public class PanUtils {
     }
 
 
-
     return randomNumbersString.substring(0, numberOfRequiredRandomNumbers);
   }
 
@@ -87,7 +87,7 @@ public class PanUtils {
    * @param partialCardNumber the partial card number
    * @return the string
    */
-  public  String generateLuhnCheckDigit(String partialCardNumber) {
+  public String generateLuhnCheckDigit(String partialCardNumber) {
     if (partialCardNumber == null) {
       return null;
 
@@ -100,7 +100,7 @@ public class PanUtils {
     }
 
     /* double every other starting from right - jumping from 2 in 2 */
-    for (int i = digits.length - 1; i >= 0; i -= 2)    {
+    for (int i = digits.length - 1; i >= 0; i -= 2) {
       digits[i] += digits[i];
       /* taking the sum of digits grater than 10 - simple trick by subtract 9 */
       if (digits[i] >= 10) {
@@ -166,8 +166,6 @@ public class PanUtils {
 
     return generatedTransactionId.toString();
   }
-
-
 
 
 }
