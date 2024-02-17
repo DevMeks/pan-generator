@@ -64,7 +64,7 @@ class PanControllerTest {
   }
 
   @Test
-  void createRandomPanForSpecifiedCardScheme() throws Exception{
+  void createRandomPanForSpecifiedCardScheme() throws Exception {
     String requestBody = "{\"cardScheme\": \"verve\"}";
     mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/pan-generator/random/pan")
@@ -88,6 +88,12 @@ class PanControllerTest {
             .contentType(MediaType.APPLICATION_JSON));
   }
 
+  @Test
+  void getPans() throws Exception{
+    mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/pan-generator/pans/1/1"))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+
+  }
 
 
 }

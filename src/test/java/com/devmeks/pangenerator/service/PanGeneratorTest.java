@@ -14,7 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -30,7 +30,7 @@ class PanGeneratorTest {
   PanGenerator panGenerator;
 
 
-  CreatePanFromMobileNumDto getRequestObject(){
+  CreatePanFromMobileNumDto getRequestObject() {
 
     return CreatePanFromMobileNumDto
         .builder()
@@ -50,7 +50,6 @@ class PanGeneratorTest {
         .getPan();
 
 
-
     assertNotNull(pan);
 
 
@@ -59,7 +58,7 @@ class PanGeneratorTest {
 
   @Test
   @Order(value = 2)
-  void createRandomPanAfterDuplicateOccurs(){
+  void createRandomPanAfterDuplicateOccurs() {
 
     assertNotNull(Objects.requireNonNull(panGenerator
             .createPanFromMobileNumber(getRequestObject())
@@ -73,6 +72,29 @@ class PanGeneratorTest {
 
     assertNotNull(Objects.requireNonNull(panGenerator.generateRandomPan(getRequestObject().getCardScheme(), getRequestObject().isGlobalVerveCard())
         .block()).getPan());
+  }
+
+  @Test
+  void generateNineteenDigitPan(){
+    var requestDto = CreatePanFromMobileNumDto.builder()
+            .isGlobalVerveCard(false)
+        .cardScheme("verve")
+            .mobileNumber("11111112222")
+                .build();
+
+    assertNotNull(Objects.requireNonNull(panGenerator.createPanFromMobileNumber(requestDto).block()).getPan());
+    assertNotNull(Objects.requireNonNull(panGenerator.generateRandomPan("VERVE", false).block()).getPan());
+  }
+
+
+  @Test
+  void getPans(){
+    assertNotNull(Objects.requireNonNull(panGenerator.getPans(1, 1).block()).getPans());
+  }
+
+  @Test
+  void getPansWithZeroPageSpecified(){
+    assertNotNull(Objects.requireNonNull(panGenerator.getPans(0, 0).block()).getPans());
   }
 
 }
