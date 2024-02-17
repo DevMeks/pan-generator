@@ -9,7 +9,10 @@ import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The type Create pan from mobile num dto.
@@ -21,7 +24,7 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CreatePanFromMobileNumDto implements BaseDto {
 
-  @JsonProperty(value = "mobileNumber",required = true)
+  @JsonProperty(value = "mobileNumber", required = true)
   @NotNull(message = "mobileNumber is mandatory")
   @NotEmpty(message = "mobileNumber should not be empty")
   @Pattern(regexp = "\\d{11}", message = "MobileNumber must be 11 digits long")
@@ -30,7 +33,7 @@ public class CreatePanFromMobileNumDto implements BaseDto {
       implementation = String.class))
   private String mobileNumber;
 
-  @JsonProperty(value = "cardScheme",required = true)
+  @JsonProperty(value = "cardScheme", required = true)
   @NotNull(message = "cardScheme is mandatory")
   @NotEmpty(message = "cardScheme should not be empty")
   @SchemaProperty(name = "cardScheme", schema = @Schema(

@@ -14,7 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -30,7 +30,7 @@ class PanGeneratorTest {
   PanGenerator panGenerator;
 
 
-  CreatePanFromMobileNumDto getRequestObject(){
+  CreatePanFromMobileNumDto getRequestObject() {
 
     return CreatePanFromMobileNumDto
         .builder()
@@ -50,7 +50,6 @@ class PanGeneratorTest {
         .getPan();
 
 
-
     assertNotNull(pan);
 
 
@@ -59,7 +58,7 @@ class PanGeneratorTest {
 
   @Test
   @Order(value = 2)
-  void createRandomPanAfterDuplicateOccurs(){
+  void createRandomPanAfterDuplicateOccurs() {
 
     assertNotNull(Objects.requireNonNull(panGenerator
             .createPanFromMobileNumber(getRequestObject())

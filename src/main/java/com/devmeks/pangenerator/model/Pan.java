@@ -28,4 +28,5 @@ public class Pan {
   @LuhnCheck
   private String cardNumber;
 
+  
 }

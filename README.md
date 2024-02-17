@@ -57,7 +57,7 @@ Access the application in your web browser at http://localhost:9993.
 
 ## Usage
 
-1. Send HTTP POST requests to the microservice's API endpoint to generate PANs 
+1. Send HTTP POST requests to the microservice's API endpoint to generate PANs
    using the provided mobile number.
    Here's an example using cURL:
 
@@ -83,8 +83,8 @@ by editing the ***application.properties*** file.
 
 You can find the OpenAPI 3.0 documentation for the PAN Generator microservice [here](./pan-generator-openapi3_0.yaml).
 
-The OpenAPI documentation provides detailed information about the API endpoints, request and response structures, and how to interact with the PAN Generator.
-
+The OpenAPI documentation provides detailed information about the API endpoints, request and response structures, and
+how to interact with the PAN Generator.
 
 ### Contributing
 

@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface PanRepo extends JpaRepository<Pan, Long> {
 
 
+
+
 }
