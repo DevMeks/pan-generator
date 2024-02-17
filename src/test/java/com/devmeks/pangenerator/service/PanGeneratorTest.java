@@ -74,10 +74,27 @@ class PanGeneratorTest {
         .block()).getPan());
   }
 
+  @Test
+  void generateNineteenDigitPan(){
+    var requestDto = CreatePanFromMobileNumDto.builder()
+            .isGlobalVerveCard(false)
+        .cardScheme("verve")
+            .mobileNumber("11111112222")
+                .build();
+
+    assertNotNull(Objects.requireNonNull(panGenerator.createPanFromMobileNumber(requestDto).block()).getPan());
+    assertNotNull(Objects.requireNonNull(panGenerator.generateRandomPan("VERVE", false).block()).getPan());
+  }
+
 
   @Test
   void getPans(){
-    assertNotNull(panGenerator.getPans(1,1));
+    assertNotNull(Objects.requireNonNull(panGenerator.getPans(1, 1).block()).getPans());
+  }
+
+  @Test
+  void getPansWithZeroPageSpecified(){
+    assertNotNull(Objects.requireNonNull(panGenerator.getPans(0, 0).block()).getPans());
   }
 
 }
