@@ -11,8 +11,11 @@ import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import java.util.List;
 
 
 /**
@@ -161,6 +164,39 @@ public class PanGenerator {
 
     return Mono.just(responseDto);
 
+  }
+
+  public  Mono<ResponseDto> getPans(int pageNumber, int pageSize){
+    ResponseDto responseDto = new ResponseDto();
+    List<Pan> listOfPans;
+
+
+
+    try{
+      if(pageNumber == 0 || pageSize == 0){
+        listOfPans = panRepo.findAll();
+
+      }else{
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        listOfPans =  panRepo.findAll(pageable).toList();
+
+      }
+
+      responseDto = ResponseDto.builder()
+          .pans(listOfPans)
+          .responseStatus(ResponseStatus.SUCCESSFUL)
+          .build();
+
+
+    }catch(Exception e){
+      log.error("An error occurred while trying to retrieve pans from the db:{}", e.getMessage());
+
+
+    }
+
+
+
+    return Mono.just(responseDto);
   }
 
 

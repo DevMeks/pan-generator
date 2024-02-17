@@ -88,5 +88,12 @@ class PanControllerTest {
             .contentType(MediaType.APPLICATION_JSON));
   }
 
+  @Test
+  void getPans() throws Exception{
+    mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/pan-generator/pans/1/1"))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+
+  }
+
 
 }

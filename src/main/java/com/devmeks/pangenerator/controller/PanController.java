@@ -89,4 +89,14 @@ public class PanController {
 
 
   }
+
+  @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE},
+      path = "/pans/{pageNumber}/{pageSize}")
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<Mono<ResponseDto>> getPans(@PathVariable int pageNumber, @PathVariable int pageSize){
+
+    var response = panGenerator.getPans(pageNumber, pageSize);
+    return panUtils.processResponse(response);
+
+  }
 }

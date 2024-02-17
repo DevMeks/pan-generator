@@ -3,12 +3,14 @@ package com.devmeks.pangenerator.dto.response;
 
 import com.devmeks.pangenerator.dto.BaseDto;
 import com.devmeks.pangenerator.exception.model.ApiError;
+import com.devmeks.pangenerator.model.Pan;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.*;
+import java.util.List;
 
 /**
  * The type Response dto.
@@ -22,10 +24,7 @@ import lombok.*;
 public class ResponseDto implements BaseDto {
 
   @JsonProperty("pan")
-  @SchemaProperty(name = "pan", schema = @Schema(
-      name = "pan",
-      maxLength = 16,
-      implementation = String.class))
+  @SchemaProperty(name = "pan", schema = @Schema(name = "pan", maxLength = 19, implementation = String.class))
   private String pan;
 
   @JsonProperty("responseStatus")
@@ -33,14 +32,22 @@ public class ResponseDto implements BaseDto {
   private ResponseStatus responseStatus;
 
   @JsonProperty("error")
+  @SchemaProperty(name = "error", schema = @Schema(implementation = ApiError.class))
   private ApiError error;
+
+  @JsonProperty("pans")
+  @SchemaProperty(name = "pans", schema = @Schema(implementation = List.class))
+  private List<Pan> pans;
 
   @Override
   public String toString() {
-    return "ResponseDto{" +
-        "pan:'" + pan + '\'' +
-        ", responseStatus:" + responseStatus +
-        ", error:" + error +
-        '}';
+    return String.format ("""
+        Response{
+        pan:%s,
+        responseStatus:%s,
+        error:%s,
+        pans:%s
+        }
+        """, pan,responseStatus,error, pans);
   }
 }
