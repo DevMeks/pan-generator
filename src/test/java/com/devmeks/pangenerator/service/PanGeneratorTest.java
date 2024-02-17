@@ -83,6 +83,7 @@ class PanGeneratorTest {
                 .build();
 
     assertNotNull(Objects.requireNonNull(panGenerator.createPanFromMobileNumber(requestDto).block()).getPan());
+    assertNotNull(Objects.requireNonNull(panGenerator.generateRandomPan("VERVE", false).block()).getPan());
   }
 
 
