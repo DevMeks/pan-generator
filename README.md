@@ -66,7 +66,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
     "mobileNumber": "080XXXXXXXX",
     "cardScheme": "Verve",
     isGlobalVerveCard": "true"
-}' http://localhost:9993/api/v1/pan-generator/mobile/pan
+}' http://localhost:9993/api/v1/pan-generator/mobile/pans
 ```
 
 2. The microservice will respond with a JSON object containing the generated
@@ -83,6 +83,7 @@ by editing the ***application.properties*** file.
 
 You can find the OpenAPI 3.0 documentation for the PAN Generator microservice [here](./pan-generator-openapi3_0.yaml).
 
+To access it locally use the following http://localhost:9993/swagger-ui/index.html
 The OpenAPI documentation provides detailed information about the API endpoints, request and response structures, and
 how to interact with the PAN Generator.
 

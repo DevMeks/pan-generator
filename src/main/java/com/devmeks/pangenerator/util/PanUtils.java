@@ -3,7 +3,6 @@ package com.devmeks.pangenerator.util;
 
 import com.devmeks.pangenerator.config.BinProperties;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
-import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -143,16 +142,24 @@ public class PanUtils {
    */
   public ResponseEntity<Mono<ResponseDto>> processResponse(Mono<ResponseDto> monoResponse) {
 
-    if (Objects.requireNonNull(monoResponse.block())
-        .getResponseStatus()
-        .equals(ResponseStatus.SUCCESSFUL)) {
+    HttpStatus status = HttpStatus.NO_CONTENT;
 
-      return ResponseEntity.status(HttpStatus.OK)
-          .body(monoResponse);
+    switch(Objects.requireNonNull(monoResponse.block())
+        .getResponseStatus()){
+
+      case SUCCESSFUL -> status = HttpStatus.OK;
+
+      case INVALID_REQUEST -> status = HttpStatus.BAD_REQUEST;
+
+
+      case NO_RECORD_FOUND -> status = HttpStatus.NOT_FOUND;
+
+
 
     }
 
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(monoResponse);
+    return ResponseEntity.status(status).body(monoResponse);
+
 
   }
 
