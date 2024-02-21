@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * The interface Pan repo.
  */
 @Repository
-public interface PanRepo extends JpaRepository<Pan, Long> {
+public interface PanRepo extends JpaRepository<Pan, String> {
 
 
 

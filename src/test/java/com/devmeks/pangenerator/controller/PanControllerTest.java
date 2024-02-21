@@ -37,7 +37,7 @@ class PanControllerTest {
   @Test
   void createPanForProvidedSchemeUsingMobileNumber() throws Exception {
     String requestBody = "{\"mobileNumber\": \"11111111111\", \"cardScheme\": \"verve\"}";
-    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan-generator/mobile/pan")
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan-generator/mobile/pans")
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestBody))
         .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -54,7 +54,7 @@ class PanControllerTest {
             "cardScheme": "Verve",
             "isGlobalVerveCard": "false"
         }""";
-    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan-generator/mobile/pan")
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan-generator/mobile/pans")
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestBody))
         .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -67,7 +67,7 @@ class PanControllerTest {
   void createRandomPanForSpecifiedCardScheme() throws Exception {
     String requestBody = "{\"cardScheme\": \"verve\"}";
     mockMvc.perform(MockMvcRequestBuilders
-            .post("/api/v1/pan-generator/random/pan")
+            .post("/api/v1/pan-generator/random/pans")
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestBody))
         .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -79,7 +79,7 @@ class PanControllerTest {
   @Test
   void createPanInvalidMobileNumber() throws Exception {
     String requestBody = "{\"mobileNumber\": \"\", \"cardScheme\":  \"verve\"}";
-    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan-generator/mobile/pan")
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pan-generator/mobile/pans")
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestBody))
         .andExpect(MockMvcResultMatchers.status().is4xxClientError())
@@ -91,6 +91,13 @@ class PanControllerTest {
   @Test
   void getPans() throws Exception{
     mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/pan-generator/pans/1/1"))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+
+  }
+
+  @Test
+  void getPan() throws Exception{
+    mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/pan-generator/pans?panUid=656grr-4544tr4-d"))
         .andExpect(MockMvcResultMatchers.status().isOk());
 
   }

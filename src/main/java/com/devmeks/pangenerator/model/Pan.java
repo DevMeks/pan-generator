@@ -21,9 +21,9 @@ import org.hibernate.validator.constraints.LuhnCheck;
 @NoArgsConstructor
 public class Pan {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.UUID)
   @Column(name = "id", nullable = false, updatable = false)
-  private Long id;
+  private String id;
   @Column(name = "pan", unique = true, length = 19, nullable = false)
   @LuhnCheck
   private String cardNumber;

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import reactor.core.publisher.Mono;
@@ -53,7 +54,7 @@ public class PanController {
    */
   @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE},
-      path = "/mobile/pan")
+      path = "/mobile/pans")
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<Mono<ResponseDto>> generatePanUsingMobileNumberForSpecifiedCardScheme(
       @Valid @RequestBody CreatePanFromMobileNumDto requestDto,
@@ -79,7 +80,7 @@ public class PanController {
    */
   @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE},
-      path = "/random/pan")
+      path = "/random/pans")
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<Mono<ResponseDto>> generatePanForSpecifiedCardScheme(
       @Valid @RequestBody CreatePanDto requestDto) {
@@ -92,10 +93,18 @@ public class PanController {
 
   @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE},
       path = "/pans/{pageNumber}/{pageSize}")
-  @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<Mono<ResponseDto>> getPans(@PathVariable int pageNumber, @PathVariable int pageSize){
 
     var response = panGenerator.getPans(pageNumber, pageSize);
+    return panUtils.processResponse(response);
+
+  }
+
+  @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE},
+      path = "/pans")
+  public ResponseEntity<Mono<ResponseDto>> getPan(@Validated @RequestParam("panUid") String panUid){
+
+    var response = panGenerator.getPan(panUid);
     return panUtils.processResponse(response);
 
   }
