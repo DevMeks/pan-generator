@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -173,14 +174,11 @@ public class PanGenerator {
 
 
     try{
-      if(pageNumber == 0 || pageSize == 0){
-        listOfPans = panRepo.findAll();
+      pageNumber = pageNumber == 0 ? 2:pageNumber;//set default value for pageNUmber if 0
+      pageSize = pageSize == 0 ? 2: pageSize;// set default value for pageSize if 0
 
-      }else{
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        listOfPans =  panRepo.findAll(pageable).toList();
-
-      }
+      Pageable pageable = PageRequest.of(pageNumber, pageSize);
+      listOfPans =  panRepo.findAll(pageable).toList();
 
       responseDto = ResponseDto.builder()
           .pans(listOfPans)
@@ -198,6 +196,34 @@ public class PanGenerator {
 
     return Mono.just(responseDto);
   }
+
+  public  Mono<ResponseDto> getPan(String panUid){
+
+    ResponseDto responseDto = new ResponseDto();
+    Optional<Pan> pan;
+
+    try{
+
+      pan =  panRepo.findById(panUid);
+      if (pan.isEmpty()){
+        responseDto = ResponseDto.builder().responseStatus(ResponseStatus.NO_RECORD_FOUND).build();
+      }else {
+        responseDto = ResponseDto.builder()
+            .pan(pan.get().getCardNumber())
+            .responseStatus(ResponseStatus.SUCCESSFUL)
+            .build();
+      }
+
+    }catch (Exception e){
+      log.error("An error occurred while trying to retrieve pans from the db:{}", e.getMessage());
+
+    }
+
+    return  Mono.just(responseDto);
+
+
+  }
+
 
 
   private Mono<ResponseDto> processException(Exception e, CreatePanFromMobileNumDto requestDto) {

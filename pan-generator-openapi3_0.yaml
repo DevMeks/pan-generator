@@ -19,7 +19,7 @@
     }
   ],
   "paths": {
-    "/api/v1/pan-generator/mobile/pan": {
+    "/api/v1/pan-generator/mobile/pans": {
       "post": {
         "tags": [
           "Generate Pan"
@@ -84,7 +84,7 @@
         }
       }
     },
-    "/api/v1/pan-generator/random/pan": {
+    "/api/v1/pan-generator/random/pans": {
       "post": {
         "tags": [
           "Generate Pan"
@@ -134,7 +134,94 @@
           }
         }
       }
+    },
+    "/api/v1/pan-generator/pans/{pageNumber}/{pageSize}": {
+      "get": {
+        "tags": [
+          "Get Pan(s)"
+        ],
+        "summary": "This operation returns a list of Pans",
+        "description": "RETRIEVES A LIST OF PANs USING PAGINATION",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "description": "The page number to be returned",
+            "required": true,
+            "allowEmptyValue": false,
+            "example": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "description": "The number of pages to be returned",
+            "required": true,
+            "allowEmptyValue": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "responseStatus": "SUCCESSFUL",
+                  "pans": [
+                    {
+                      "id": "5gf434fe",
+                      "cardNumber": "5555555555555555"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pan-generator/pans": {
+      "get": {
+        "tags": [
+          "Get Pan(s)"
+        ],
+        "summary": "This operation retrieves a Pan using the unique id  tied to the Pan",
+        "description": "Retrieves a Pan",
+        "parameters": [
+          {
+            "name": "panUid",
+            "in": "query",
+            "description": "The UID mapped to the Pan",
+            "required": true,
+            "allowEmptyValue": false,
+            "example": "543r-32egt-534g"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "pan": "5555555555555555",
+                  "responseStatus": "SUCCESSFUL"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No Record Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "responseStatus": "NO_RECORD_FOUND"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
-  "components": { }
+  "components": {}
 }

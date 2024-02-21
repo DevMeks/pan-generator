@@ -14,6 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Objects;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
@@ -90,6 +91,11 @@ class PanGeneratorTest {
   @Test
   void getPans(){
     assertNotNull(Objects.requireNonNull(panGenerator.getPans(1, 1).block()).getPans());
+  }
+
+  @Test
+  void getPan(){
+    assertNull(Objects.requireNonNull(panGenerator.getPan("43536r-ttr6-rg565").block()).getPans());
   }
 
   @Test
