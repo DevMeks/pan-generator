@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import reactor.core.publisher.Mono;
 
 
@@ -58,10 +57,9 @@ public class PanController {
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<Mono<ResponseDto>> generatePanUsingMobileNumberForSpecifiedCardScheme(
       @Valid @RequestBody CreatePanFromMobileNumDto requestDto,
-      @RequestHeader(value = "transactionId", required = false) String transactionId)
-  {
+      @RequestHeader(value = "transactionId", required = false) String transactionId) {
     String sequenceNumber = panUtils.generateTransactionId();
-    String mainTransactionId = StringUtils.isBlank(transactionId) ? sequenceNumber: transactionId;
+    String mainTransactionId = StringUtils.isBlank(transactionId) ? sequenceNumber : transactionId;
 
     log.info("REQUEST FROM CALLER IS:: {} AND THE TRANSACTION ID IS:: {} ", requestDto, mainTransactionId);
 
@@ -93,7 +91,7 @@ public class PanController {
 
   @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE},
       path = "/pans/{pageNumber}/{pageSize}")
-  public ResponseEntity<Mono<ResponseDto>> getPans(@PathVariable int pageNumber, @PathVariable int pageSize){
+  public ResponseEntity<Mono<ResponseDto>> getPans(@PathVariable int pageNumber, @PathVariable int pageSize) {
 
     var response = panGenerator.getPans(pageNumber, pageSize);
     return panUtils.processResponse(response);
@@ -102,7 +100,7 @@ public class PanController {
 
   @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE},
       path = "/pans")
-  public ResponseEntity<Mono<ResponseDto>> getPan(@Validated @RequestParam("panUid") String panUid){
+  public ResponseEntity<Mono<ResponseDto>> getPan(@Validated @RequestParam("panUid") String panUid) {
 
     var response = panGenerator.getPan(panUid);
     return panUtils.processResponse(response);

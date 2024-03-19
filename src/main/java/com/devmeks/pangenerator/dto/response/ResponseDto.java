@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.*;
+
 import java.util.List;
 
 /**
@@ -41,13 +42,13 @@ public class ResponseDto implements BaseDto {
 
   @Override
   public String toString() {
-    return String.format ("""
+    return String.format("""
         Response{
         pan:%s,
         responseStatus:%s,
         error:%s,
         pans:%s
         }
-        """, pan,responseStatus,error, pans);
+        """, pan, responseStatus, error, pans);
   }
 }
