@@ -3,10 +3,13 @@ package com.devmeks.pangenerator.util;
 
 import com.devmeks.pangenerator.config.BinProperties;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
+import com.devmeks.pangenerator.exception.model.ApiError;
+import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -19,10 +22,11 @@ import java.util.Objects;
  */
 @Component
 @Slf4j
-public class PanUtils {
-
+public final class PanUtils {
 
   private static final SecureRandom RANDOM = new SecureRandom();
+
+  private final BCryptPasswordEncoder passwordEncoder;
 
 
   private final BinProperties binProperties;
@@ -34,8 +38,9 @@ public class PanUtils {
    * @param binProperties the bin properties
    */
   @Autowired
-  public PanUtils(BinProperties binProperties) {
+  public PanUtils(BinProperties binProperties, BCryptPasswordEncoder passwordEncoder) {
     this.binProperties = binProperties;
+    this.passwordEncoder = passwordEncoder;
   }
 
 
@@ -144,8 +149,8 @@ public class PanUtils {
 
     HttpStatus status = HttpStatus.NO_CONTENT;
 
-    switch(Objects.requireNonNull(monoResponse.block())
-        .getResponseStatus()){
+    switch (Objects.requireNonNull(monoResponse.block())
+        .getResponseStatus()) {
 
       case SUCCESSFUL -> status = HttpStatus.OK;
 
@@ -153,7 +158,6 @@ public class PanUtils {
 
 
       case NO_RECORD_FOUND -> status = HttpStatus.NOT_FOUND;
-
 
 
     }
@@ -172,6 +176,45 @@ public class PanUtils {
 
 
     return generatedTransactionId.toString();
+  }
+
+
+  public String encryptPassword(String clearPassword) {
+    return passwordEncoder.encode(clearPassword);
+  }
+
+  public boolean isPasswordValid(String rawPassword, String encryptedPassword) {
+
+    return passwordEncoder.matches(rawPassword, encryptedPassword);
+  }
+
+  public Mono<ResponseDto> processException(Exception e) {
+
+    var apiError = ApiError.ceateApiError();
+
+    log.error("Error Details:........{} exception error", e.getMessage());
+    ResponseDto responseDto = new ResponseDto();
+
+    apiError.setErrorMessage(e.getLocalizedMessage());
+    responseDto.setError(apiError);
+    responseDto.setResponseStatus(ResponseStatus.INVALID_REQUEST);
+    return Mono.just(responseDto);
+
+  }
+
+
+  public Mono<ResponseDto> processException(Exception e, String errorMessage) {
+
+    var apiError = ApiError.ceateApiError();
+
+    log.error("Error Details:........{} exception error", e.getMessage());
+    ResponseDto responseDto = new ResponseDto();
+
+    apiError.setErrorMessage(errorMessage);
+    responseDto.setError(apiError);
+    responseDto.setResponseStatus(ResponseStatus.INVALID_REQUEST);
+    return Mono.just(responseDto);
+
   }
 
 
