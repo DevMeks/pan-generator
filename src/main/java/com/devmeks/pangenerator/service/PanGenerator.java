@@ -3,7 +3,6 @@ package com.devmeks.pangenerator.service;
 
 import com.devmeks.pangenerator.dto.request.CreatePanFromMobileNumDto;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
-import com.devmeks.pangenerator.exception.model.ApiError;
 import com.devmeks.pangenerator.model.Pan;
 import com.devmeks.pangenerator.repository.PanRepo;
 import com.devmeks.pangenerator.util.PanUtils;
@@ -15,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -87,7 +87,17 @@ public class PanGenerator {
       returnedPanObject = panRepo.save(panObject);
 
     } catch (Exception e) {
-      return processException(e, requestDto);
+
+      String exceptionType = e.getClass().getSimpleName();
+
+      //if pan exists generate new random pan
+      if (exceptionType.equals("DataIntegrityViolationException")) {
+        log.error("Error Details:........{} exception error", e.getMessage());
+        log.info("Generating random {} Pan............", requestDto.getCardScheme());
+        return generateRandomPan(requestDto.getCardScheme(), requestDto.isGlobalVerveCard());
+      }
+
+      return panUtils.processException(e);
     }
 
     responseDto.setPan(returnedPanObject.getCardNumber());
@@ -167,18 +177,17 @@ public class PanGenerator {
 
   }
 
-  public  Mono<ResponseDto> getPans(int pageNumber, int pageSize){
+  public Mono<ResponseDto> getPans(int pageNumber, int pageSize) {
     ResponseDto responseDto = new ResponseDto();
     List<Pan> listOfPans;
 
 
-
-    try{
-      pageNumber = pageNumber == 0 ? 2:pageNumber;//set default value for pageNUmber if 0
-      pageSize = pageSize == 0 ? 2: pageSize;// set default value for pageSize if 0
+    try {
+      pageNumber = pageNumber == 0 ? 2 : pageNumber;//set default value for pageNUmber if 0
+      pageSize = pageSize == 0 ? 2 : pageSize;// set default value for pageSize if 0
 
       Pageable pageable = PageRequest.of(pageNumber, pageSize);
-      listOfPans =  panRepo.findAll(pageable).toList();
+      listOfPans = panRepo.findAll(pageable).toList();
 
       responseDto = ResponseDto.builder()
           .pans(listOfPans)
@@ -186,63 +195,42 @@ public class PanGenerator {
           .build();
 
 
-    }catch(Exception e){
+    } catch (Exception e) {
       log.error("An error occurred while trying to retrieve pans from the db:{}", e.getMessage());
 
 
     }
 
 
-
     return Mono.just(responseDto);
   }
 
-  public  Mono<ResponseDto> getPan(String panUid){
+  public Mono<ResponseDto> getPan(String panUid) {
 
     ResponseDto responseDto = new ResponseDto();
     Optional<Pan> pan;
 
-    try{
+    try {
 
-      pan =  panRepo.findById(panUid);
-      if (pan.isEmpty()){
+      pan = panRepo.findById(panUid);
+      if (pan.isEmpty()) {
         responseDto = ResponseDto.builder().responseStatus(ResponseStatus.NO_RECORD_FOUND).build();
-      }else {
+      } else {
         responseDto = ResponseDto.builder()
             .pan(pan.get().getCardNumber())
             .responseStatus(ResponseStatus.SUCCESSFUL)
             .build();
       }
 
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error("An error occurred while trying to retrieve pans from the db:{}", e.getMessage());
 
     }
 
-    return  Mono.just(responseDto);
-
-
-  }
-
-
-
-  private Mono<ResponseDto> processException(Exception e, CreatePanFromMobileNumDto requestDto) {
-
-    var apiError = ApiError.ceateApiError();
-
-    log.error("Error Details:........{} exception error", e.getMessage());
-    String exceptionType = e.getClass().getSimpleName();
-    ResponseDto responseDto = new ResponseDto();
-
-    //if pan exists generate new random pan
-    if (exceptionType.equals("DataIntegrityViolationException")) {
-      log.info("Generating random {} Pan............", requestDto.getCardScheme());
-
-      return generateRandomPan(requestDto.getCardScheme(), requestDto.isGlobalVerveCard());
-    }
-    apiError.setErrorMessage("Empty mobileNumber parameter");
-    responseDto.setError(apiError);
     return Mono.just(responseDto);
 
+
   }
+
+
 }

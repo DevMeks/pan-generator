@@ -7,7 +7,10 @@ import com.devmeks.pangenerator.exception.model.ApiError;
 import com.devmeks.pangenerator.model.Pan;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.models.*;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.annotations.OpenAPI30;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -66,8 +69,6 @@ public class SwaggerConfig {
         ResponseDto.builder()
             .responseStatus(ResponseStatus.NO_RECORD_FOUND)
             .build();
-
-
 
 
     var invalidMobileNumberResponse = new ResponseDto();
@@ -233,41 +234,41 @@ public class SwaggerConfig {
 
 
             ).addPathItem("/api/v1/pan-generator/pans",
-            new PathItem()
-                .get(new Operation()
-                    .description("Retrieves a Pan")
-                    .summary("This operation retrieves a Pan using the unique id  tied to the Pan")
-                    .tags(getPanTagList)
-                    .parameters(Collections.singletonList(
-                        new Parameter()
-                            .name("panUid")
-                            .in(String.valueOf(ParameterIn.QUERY))
-                            .required(true)
-                            .description("The UID mapped to the Pan")
-                            .example("543r-32egt-534g")
-                            .allowEmptyValue(false)
-                    ))
-                    .responses(
-                        new ApiResponses()
-                            .addApiResponse("200", new ApiResponse()
-                                .description("Successful Response")
-                                .content(new Content()
-                                    .addMediaType(JSON_MEDIA_TYPE,
-                                        new MediaType()
-                                            .example(getPanResponse))))
-                            .addApiResponse("404", new ApiResponse()
-                                .description("No Record Found")
-                                .content(new Content()
-                                    .addMediaType(JSON_MEDIA_TYPE,
-                                        new MediaType()
-                                            .example(getNoPanResponse)
-                            )
-                    )
-                )
+                new PathItem()
+                    .get(new Operation()
+                        .description("Retrieves a Pan")
+                        .summary("This operation retrieves a Pan using the unique id  tied to the Pan")
+                        .tags(getPanTagList)
+                        .parameters(Collections.singletonList(
+                            new Parameter()
+                                .name("panUid")
+                                .in(String.valueOf(ParameterIn.QUERY))
+                                .required(true)
+                                .description("The UID mapped to the Pan")
+                                .example("543r-32egt-534g")
+                                .allowEmptyValue(false)
+                        ))
+                        .responses(
+                            new ApiResponses()
+                                .addApiResponse("200", new ApiResponse()
+                                    .description("Successful Response")
+                                    .content(new Content()
+                                        .addMediaType(JSON_MEDIA_TYPE,
+                                            new MediaType()
+                                                .example(getPanResponse))))
+                                .addApiResponse("404", new ApiResponse()
+                                    .description("No Record Found")
+                                    .content(new Content()
+                                        .addMediaType(JSON_MEDIA_TYPE,
+                                            new MediaType()
+                                                .example(getNoPanResponse)
+                                        )
+                                    )
+                                )
 
 
-        )
-        )));
+                        )
+                    )));
 
   }
 
