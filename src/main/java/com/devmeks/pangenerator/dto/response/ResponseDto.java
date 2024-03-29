@@ -40,6 +40,10 @@ public class ResponseDto implements BaseDto {
   @SchemaProperty(name = "pans", schema = @Schema(implementation = List.class))
   private List<Pan> pans;
 
+  @JsonProperty("responseMessage")
+  @SchemaProperty(name = "pan", schema = @Schema(name = "message", implementation = String.class))
+  private String responseMessage;
+
   @Override
   public String toString() {
     return String.format("""
@@ -47,8 +51,9 @@ public class ResponseDto implements BaseDto {
         pan:%s,
         responseStatus:%s,
         error:%s,
-        pans:%s
+        pans:%s,
+        responseMessage:%s
         }
-        """, pan, responseStatus, error, pans);
+        """, pan, responseStatus, error, pans, responseMessage);
   }
 }

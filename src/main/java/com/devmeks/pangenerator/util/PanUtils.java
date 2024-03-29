@@ -192,7 +192,7 @@ public final class PanUtils {
 
     var apiError = ApiError.ceateApiError();
 
-    log.error("Error Details:........{} exception error", e.getMessage());
+    log.error("{}: AN ERROR OCCURRED - DETAIL - {}",e.getClass().getSimpleName(), e.getMessage());
     ResponseDto responseDto = new ResponseDto();
 
     apiError.setErrorMessage(e.getLocalizedMessage());
@@ -207,7 +207,7 @@ public final class PanUtils {
 
     var apiError = ApiError.ceateApiError();
 
-    log.error("Error Details:........{} exception error", e.getMessage());
+    log.error("{}: AN ERROR OCCURRED - DETAIL - {}",e.getClass().getSimpleName(), e.getMessage());
     ResponseDto responseDto = new ResponseDto();
 
     apiError.setErrorMessage(errorMessage);

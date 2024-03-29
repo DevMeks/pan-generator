@@ -33,4 +33,9 @@ public class UserDto implements BaseDto {
   private String confirmPassword;
 
 
+  @NotBlank(message = "Please provide a name for your organization")
+  @JsonProperty("organizationName")
+  private String organizationName;
+
+
 }

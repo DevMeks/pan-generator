@@ -1,15 +1,10 @@
 package com.devmeks.pangenerator.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 
@@ -18,8 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
-@EntityListeners(AuditTrailListener.class)
-public class User implements UserDetails {
+public class User extends AbstractAuditingEntity implements UserDetails  {
 
 
   @Id
@@ -41,26 +35,15 @@ public class User implements UserDetails {
       inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles;
 
-  @CreatedBy
-  @Column(nullable = false, updatable = false)
-  private String createdBy;
-
-  @CreatedDate
-  @Column(nullable = false, updatable = false)
-  @Setter
-  private LocalDateTime createdAt;
-
-  @LastModifiedBy
-  @Column
-  private String modifiedBy;
-
-  @LastModifiedDate
-  @Column
-  @Setter
-  private LocalDateTime modified;
+  @JsonIgnore
+  @OneToOne
+  @JoinColumn(name="organization_id")
+  private Organization organization;
 
   @Column(columnDefinition = "BOOLEAN default 'false'")
   private boolean status;
+
+
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
