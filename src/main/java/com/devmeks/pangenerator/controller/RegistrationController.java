@@ -43,4 +43,18 @@ public class RegistrationController {
 
 
   }
+
+  @PatchMapping(consumes = {MediaType.APPLICATION_JSON_VALUE},
+      produces = {MediaType.APPLICATION_JSON_VALUE}, params = {"userName", "otp"})
+  public ResponseEntity<Mono<ResponseDto>>  activateAccount(
+      @RequestParam(value = "userName") String userName,
+      @RequestParam(value = "otp") String otp
+  ){
+
+
+    return  panGeneratorUtils.processResponse(userService.verifyAccount(userName, otp));
+
+
+
+  }
 }

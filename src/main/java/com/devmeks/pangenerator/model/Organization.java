@@ -23,12 +23,12 @@ import java.util.UUID;
 public class Organization extends AbstractAuditingEntity{
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "id", nullable = false)
+  @Column(name = "organizationId", nullable = false)
   @JdbcTypeCode(SqlTypes.UUID)
   @Getter
   private UUID id;
 
-  @Column(name = "name", nullable = false, unique = true)
+  @Column(name = "organizationName", nullable = false, unique = true)
   private String name;
 
 

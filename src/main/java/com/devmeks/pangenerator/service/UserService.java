@@ -4,21 +4,24 @@ package com.devmeks.pangenerator.service;
 import com.devmeks.pangenerator.dto.request.LoginUserDto;
 import com.devmeks.pangenerator.dto.request.UserDto;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
-import com.devmeks.pangenerator.exception.InvalidPasswordException;
-import com.devmeks.pangenerator.exception.PasswordMismatchException;
+import com.devmeks.pangenerator.exception.*;
 import com.devmeks.pangenerator.model.Organization;
 import com.devmeks.pangenerator.model.User;
 import com.devmeks.pangenerator.repository.OrganizationRepo;
 import com.devmeks.pangenerator.repository.UserRepo;
+import com.devmeks.pangenerator.util.OTP;
 import com.devmeks.pangenerator.util.PanGeneratorUtils;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Service
@@ -119,6 +122,50 @@ public class UserService {
     return null;
 
 
+
+
+  }
+
+
+
+  @Transactional
+  @Modifying
+  public Mono<ResponseDto> verifyAccount(String userName, String otp){
+
+    var user = userRepo.findByUsername(userName);
+
+
+    //check that user exists
+    if(Objects.isNull(user)){
+      return panGeneratorUtils.processException(new UserNotFoundException());
+    }
+
+    //check otp
+    if(!user.getOtp().equals(otp)){
+      return panGeneratorUtils.processException(new InvalidTokenException());
+    }
+
+    //check otp expiry
+    OTP otpObject = new OTP(otp, user.getOtpExpiryDate());
+
+    if(!otpObject.isValid()){
+
+      return panGeneratorUtils.processException(new ExpiredTokenException());
+
+    }
+
+
+    user.setEnabled(true);
+    userRepo.save(user);
+
+    //return a response
+    ResponseDto responseDto = new ResponseDto();
+    responseDto.setResponseStatus(ResponseStatus.SUCCESSFUL);
+    responseDto.setResponseMessage("Your account has been activated");
+
+    log.info("Activated user account");
+
+    return Mono.just(responseDto);
 
 
   }

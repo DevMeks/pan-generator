@@ -1,9 +1,9 @@
 package com.devmeks.pangenerator.exception;
 
-public class TokenExpiredException extends Exception{
+public class ExpiredTokenException extends Exception{
   private static final String ERROR_MESSAGE = "Token has expired";
 
-  public TokenExpiredException() {
+  public ExpiredTokenException() {
     super(ERROR_MESSAGE);
   }
 }

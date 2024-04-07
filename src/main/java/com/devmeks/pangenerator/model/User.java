@@ -31,6 +31,8 @@ public class User extends AbstractAuditingEntity implements UserDetails  {
 
   @Column(unique = true)
   private String username;
+
+
   private String passwordHash; // Store securely (hashed and salted)
 
   @Column(unique = true)
@@ -43,12 +45,13 @@ public class User extends AbstractAuditingEntity implements UserDetails  {
   private Set<Role> roles;
 
   @JsonIgnore
-  @OneToOne
+  @ManyToOne
   @Setter
-  @JoinColumn(name="organization_id")
+  @JoinColumn(name="organizationName")
   private Organization organization;
 
   @Column(columnDefinition = "BOOLEAN default 'false'")
+  @Setter
   private boolean enabled;
 
   @Getter

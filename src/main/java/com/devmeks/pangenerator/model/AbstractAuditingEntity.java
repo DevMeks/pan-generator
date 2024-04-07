@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -40,12 +41,12 @@ public abstract class AbstractAuditingEntity implements Serializable {
   @Column(name = "updatedBy", length = 64)
   private Long updatedBy;
 
-  @LastModifiedDate
+
+  @UpdateTimestamp
   @Column(name = "updatedAt")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'hh:mm:ss")
-  private LocalDateTime updatedAt;
+  private LocalDateTime updatedAt ;
 
 
-  //public  Long loggedUserId() {return JwtTokenProvider.loggedId;}
 
 }

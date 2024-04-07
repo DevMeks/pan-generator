@@ -222,7 +222,7 @@ public final class PanGeneratorUtils {
 
 
   public static OTP generateOTP(int length){
-    String otp  = RandomStringUtils.randomAlphanumeric(length);
+    String otp  = RandomStringUtils.randomNumeric(length);
     LocalDateTime expiryDateTime = LocalDateTime.now().plusMinutes(OTP_VALIDITY_MINUTES);
     return new OTP(otp,expiryDateTime);
   }
