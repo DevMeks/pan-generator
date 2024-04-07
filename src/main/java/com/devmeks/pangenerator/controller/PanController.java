@@ -5,7 +5,7 @@ import com.devmeks.pangenerator.dto.request.CreatePanDto;
 import com.devmeks.pangenerator.dto.request.CreatePanFromMobileNumDto;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
 import com.devmeks.pangenerator.service.PanGenerator;
-import com.devmeks.pangenerator.util.PanUtils;
+import com.devmeks.pangenerator.util.PanGeneratorUtils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,19 +27,19 @@ import reactor.core.publisher.Mono;
 public class PanController {
 
   private final PanGenerator panGenerator;
-  private final PanUtils panUtils;
+  private final PanGeneratorUtils panGeneratorUtils;
 
   /**
    * Instantiates a new Pan controller.
    *
    * @param panGenerator the pan generator
-   * @param panUtils     the pan utils
+   * @param panGeneratorUtils     the pan utils
    */
   @Autowired
-  public PanController(PanGenerator panGenerator, PanUtils panUtils) {
+  public PanController(PanGenerator panGenerator, PanGeneratorUtils panGeneratorUtils) {
 
     this.panGenerator = panGenerator;
-    this.panUtils = panUtils;
+    this.panGeneratorUtils = panGeneratorUtils;
   }
 
 
@@ -58,14 +58,14 @@ public class PanController {
   public ResponseEntity<Mono<ResponseDto>> generatePanUsingMobileNumberForSpecifiedCardScheme(
       @Valid @RequestBody CreatePanFromMobileNumDto requestDto,
       @RequestHeader(value = "transactionId", required = false) String transactionId) {
-    String sequenceNumber = panUtils.generateTransactionId();
+    String sequenceNumber = panGeneratorUtils.generateTransactionId();
     String mainTransactionId = StringUtils.isBlank(transactionId) ? sequenceNumber : transactionId;
 
     log.info("REQUEST FROM CALLER IS:: {} AND THE TRANSACTION ID IS:: {} ", requestDto, mainTransactionId);
 
     var response = panGenerator.createPanFromMobileNumber(requestDto);
 
-    return panUtils.processResponse(response);
+    return panGeneratorUtils.processResponse(response);
 
   }
 
@@ -84,7 +84,7 @@ public class PanController {
       @Valid @RequestBody CreatePanDto requestDto) {
     var response = panGenerator.generateRandomPan(requestDto.getCardScheme(),
         requestDto.isGlobalVerveCard());
-    return panUtils.processResponse(response);
+    return panGeneratorUtils.processResponse(response);
 
 
   }
@@ -94,7 +94,7 @@ public class PanController {
   public ResponseEntity<Mono<ResponseDto>> getPans(@PathVariable int pageNumber, @PathVariable int pageSize) {
 
     var response = panGenerator.getPans(pageNumber, pageSize);
-    return panUtils.processResponse(response);
+    return panGeneratorUtils.processResponse(response);
 
   }
 
@@ -103,7 +103,7 @@ public class PanController {
   public ResponseEntity<Mono<ResponseDto>> getPan(@Validated @RequestParam("panUid") String panUid) {
 
     var response = panGenerator.getPan(panUid);
-    return panUtils.processResponse(response);
+    return panGeneratorUtils.processResponse(response);
 
   }
 }

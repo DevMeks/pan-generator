@@ -1,12 +1,18 @@
 package com.devmeks.pangenerator.model;
 
+import com.devmeks.pangenerator.util.OTP;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Builder
@@ -17,10 +23,11 @@ public class User extends AbstractAuditingEntity implements UserDetails  {
 
 
   @Id
-  @Column(name = "user_id")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id", nullable = false)
+  @JdbcTypeCode(SqlTypes.UUID)
   @Getter
-  private Long id;
+  private UUID id;
 
   @Column(unique = true)
   private String username;
@@ -37,11 +44,18 @@ public class User extends AbstractAuditingEntity implements UserDetails  {
 
   @JsonIgnore
   @OneToOne
+  @Setter
   @JoinColumn(name="organization_id")
   private Organization organization;
 
   @Column(columnDefinition = "BOOLEAN default 'false'")
-  private boolean status;
+  private boolean enabled;
+
+  @Getter
+  private String otp;
+
+  @Getter
+  private LocalDateTime otpExpiryDate;
 
 
 
@@ -77,7 +91,7 @@ public class User extends AbstractAuditingEntity implements UserDetails  {
 
   @Override
   public boolean isEnabled() {
-    return status;
+    return enabled;
   }
 
 

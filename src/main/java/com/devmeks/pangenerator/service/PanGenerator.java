@@ -5,7 +5,7 @@ import com.devmeks.pangenerator.dto.request.CreatePanFromMobileNumDto;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
 import com.devmeks.pangenerator.model.Pan;
 import com.devmeks.pangenerator.repository.PanRepo;
-import com.devmeks.pangenerator.util.PanUtils;
+import com.devmeks.pangenerator.util.PanGeneratorUtils;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ import java.util.Optional;
 public class PanGenerator {
   private static final int PARTIAL_LENGTH_OF_LOCAL_VERVE_CARD = 18;
   private static final int PARTIAL_LENGTH_OF_CARD = 15;
-  private final PanUtils panUtils;
+  private final PanGeneratorUtils panGeneratorUtils;
   private final PanRepo panRepo;
 
 
@@ -35,12 +35,12 @@ public class PanGenerator {
    * Instantiates a new Pan generator.
    *
    * @param panRepo  the pan repo
-   * @param panUtils the pan utils
+   * @param panGeneratorUtils the pan utils
    */
   @Autowired
-  public PanGenerator(PanRepo panRepo, PanUtils panUtils) {
+  public PanGenerator(PanRepo panRepo, PanGeneratorUtils panGeneratorUtils) {
     this.panRepo = panRepo;
-    this.panUtils = panUtils;
+    this.panGeneratorUtils = panGeneratorUtils;
   }
 
 
@@ -58,7 +58,7 @@ public class PanGenerator {
     String partialPan;
 
     try {
-      bankBin = panUtils.retrieveIin(requestDto.getCardScheme());
+      bankBin = panGeneratorUtils.retrieveIin(requestDto.getCardScheme());
       partialPan = bankBin + requestDto.getMobileNumber().substring(2);
 
       //caters for 19 digit PAN length for verve card scheme
@@ -76,7 +76,7 @@ public class PanGenerator {
 
       String pan = panBuilder
           .append(partialPan)
-          .append(panUtils.generateLuhnCheckDigit(partialPan)).toString();
+          .append(panGeneratorUtils.generateLuhnCheckDigit(partialPan)).toString();
 
 
       Pan panObject = Pan.builder()
@@ -97,7 +97,7 @@ public class PanGenerator {
         return generateRandomPan(requestDto.getCardScheme(), requestDto.isGlobalVerveCard());
       }
 
-      return panUtils.processException(e);
+      return panGeneratorUtils.processException(e);
     }
 
     responseDto.setPan(returnedPanObject.getCardNumber());
@@ -118,7 +118,7 @@ public class PanGenerator {
       panWithoutCheckDigit = panWithoutCheckDigit.substring(0, maxPartialPanLength);
     } else if (panWithoutCheckDigit.length() < maxPartialPanLength) {
       panWithoutCheckDigit = panWithoutCheckDigit
-          + panUtils.generateRandomNumbers(requiredRandomNumbers);
+          + panGeneratorUtils.generateRandomNumbers(requiredRandomNumbers);
 
     }
 
@@ -142,7 +142,7 @@ public class PanGenerator {
     String partialPan;
     int requiredRandomDigits;
 
-    String cardBin = panUtils.retrieveIin(cardScheme);
+    String cardBin = panGeneratorUtils.retrieveIin(cardScheme);
 
     //cater for 19 digit PAN when card scheme is Verve
     if (cardScheme.equalsIgnoreCase("verve") &&
@@ -154,12 +154,12 @@ public class PanGenerator {
       requiredRandomDigits = 15 - cardBin.length();
 
     }
-    partialPan = cardBin + panUtils.generateRandomNumbers(requiredRandomDigits);
+    partialPan = cardBin + panGeneratorUtils.generateRandomNumbers(requiredRandomDigits);
 
 
     String pan = panBuilder
         .append(partialPan)
-        .append(panUtils.generateLuhnCheckDigit(partialPan)).toString();
+        .append(panGeneratorUtils.generateLuhnCheckDigit(partialPan)).toString();
 
     Pan panObject = Pan.builder()
         .cardNumber(pan)

@@ -5,7 +5,7 @@ import com.devmeks.pangenerator.dto.request.LoginUserDto;
 import com.devmeks.pangenerator.dto.request.UserDto;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
 import com.devmeks.pangenerator.service.UserService;
-import com.devmeks.pangenerator.util.PanUtils;
+import com.devmeks.pangenerator.util.PanGeneratorUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,19 +18,19 @@ import reactor.core.publisher.Mono;
 public class RegistrationController {
 
   UserService userService;
-  PanUtils panUtils;
+  PanGeneratorUtils panGeneratorUtils;
 
   @Autowired
-  public RegistrationController(UserService userService, PanUtils panUtils) {
+  public RegistrationController(UserService userService, PanGeneratorUtils panGeneratorUtils) {
     this.userService = userService;
-    this.panUtils = panUtils;
+    this.panGeneratorUtils = panGeneratorUtils;
   }
 
   @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<Mono<ResponseDto>> createUser(@Valid @RequestBody UserDto user)  {
 
-    return panUtils.processResponse(userService.createUser(user));
+    return panGeneratorUtils.processResponse(userService.createUser(user));
 
 
   }
@@ -39,7 +39,7 @@ public class RegistrationController {
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<Mono<ResponseDto>> login(@Valid @RequestBody LoginUserDto user)  {
 
-    return panUtils.processResponse(userService.login(user));
+    return panGeneratorUtils.processResponse(userService.login(user));
 
 
   }

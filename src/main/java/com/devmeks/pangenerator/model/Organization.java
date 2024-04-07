@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "organization")
@@ -25,7 +26,7 @@ public class Organization extends AbstractAuditingEntity{
   @Column(name = "id", nullable = false)
   @JdbcTypeCode(SqlTypes.UUID)
   @Getter
-  private Long id;
+  private UUID id;
 
   @Column(name = "name", nullable = false, unique = true)
   private String name;

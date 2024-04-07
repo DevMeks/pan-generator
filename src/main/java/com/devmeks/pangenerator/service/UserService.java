@@ -10,7 +10,7 @@ import com.devmeks.pangenerator.model.Organization;
 import com.devmeks.pangenerator.model.User;
 import com.devmeks.pangenerator.repository.OrganizationRepo;
 import com.devmeks.pangenerator.repository.UserRepo;
-import com.devmeks.pangenerator.util.PanUtils;
+import com.devmeks.pangenerator.util.PanGeneratorUtils;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,17 +27,17 @@ import java.util.Objects;
 public class UserService {
 
 
-  private final PanUtils panUtils;
+  private final PanGeneratorUtils panGeneratorUtils;
 
   private final UserRepo userRepo;
 
   private final OrganizationRepo organizationRepo;
 
   @Autowired
-  public UserService(PanUtils panUtils, UserRepo userRepo, OrganizationRepo organizationRepo) {
+  public UserService(PanGeneratorUtils panGeneratorUtils, UserRepo userRepo, OrganizationRepo organizationRepo) {
 
     this.userRepo = userRepo;
-    this.panUtils = panUtils;
+    this.panGeneratorUtils = panGeneratorUtils;
     this.organizationRepo = organizationRepo;
   }
 
@@ -52,36 +52,35 @@ public class UserService {
 
     //check if passwords provided matches
     if(!userDto.getPassword().equals(userDto.getConfirmPassword())){
-      return panUtils.processException(new PasswordMismatchException());
+      return panGeneratorUtils.processException(new PasswordMismatchException());
 
     }
 
-    //check if organization exists and skip if it does
+    //check if organization exists and assign to retrievedOrganization
     var retrievedOrganization = organizationRepo.findOrganizationByName(userDto.getOrganizationName());
 
     if (Objects.isNull(retrievedOrganization)){
-
-
       var organization = Organization.builder()
           .name(userDto.getOrganizationName())
           .build();
 
+      //create new Organization and assign to retrievedOrganization
       retrievedOrganization= organizationRepo.save(organization);
 
 
     }
 
-
-
-
-
+    //generate otp
+    var otp = PanGeneratorUtils.generateOTP(6);
 
 
     var user = User.builder()
         .email(userDto.getEmail())
-        .passwordHash(panUtils.encryptPassword(userDto.getPassword()))
+        .passwordHash(panGeneratorUtils.encryptPassword(userDto.getPassword()))
         .username(userDto.getUserName())
         .organization(retrievedOrganization)
+        .otp(otp.getCode())
+        .otpExpiryDate(otp.getExpiryDateTime())
         .build();
 
     try {
@@ -91,7 +90,7 @@ public class UserService {
 
       var errorMessage = getCleanErrorMessage(e.getMessage());
 
-      return panUtils.processException(e, errorMessage);
+      return panGeneratorUtils.processException(e, errorMessage);
     }
 
 
@@ -112,8 +111,8 @@ public class UserService {
     var user = userRepo.findByUsername(loginUserDto.getUserName());
 
     //check that password is correct
-    if ( !panUtils.isPasswordValid(loginUserDto.getPassword(), user.getPassword())){
-      return panUtils.processException(new InvalidPasswordException());
+    if ( !panGeneratorUtils.isPasswordValid(loginUserDto.getPassword(), user.getPassword())){
+      return panGeneratorUtils.processException(new InvalidPasswordException());
     }
 
 

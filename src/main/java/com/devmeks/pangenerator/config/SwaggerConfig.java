@@ -3,7 +3,7 @@ package com.devmeks.pangenerator.config;
 import com.devmeks.pangenerator.dto.request.CreatePanDto;
 import com.devmeks.pangenerator.dto.request.CreatePanFromMobileNumDto;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
-import com.devmeks.pangenerator.exception.model.ApiError;
+import com.devmeks.pangenerator.exception.ApiError;
 import com.devmeks.pangenerator.model.Pan;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

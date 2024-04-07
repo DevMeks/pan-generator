@@ -1,4 +1,4 @@
-package com.devmeks.pangenerator.exception.model;
+package com.devmeks.pangenerator.exception;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;

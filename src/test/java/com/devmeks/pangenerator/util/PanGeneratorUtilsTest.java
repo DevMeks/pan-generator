@@ -18,26 +18,26 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Testcontainers
 @ActiveProfiles("test")
-class PanUtilsTest {
+class PanGeneratorUtilsTest {
 
   @Container
   public static PostgreSQLContainer<PanRepoPostgresqlContainer> postgreSQLContainer = PanRepoPostgresqlContainer.getInstance();
 
   @Autowired
-  private PanUtils panUtils;
+  private PanGeneratorUtils panGeneratorUtils;
 
 
   @Test
   void testRetrieveIin() {
 
-    assertEquals("111111", panUtils.retrieveIin("Verve"));
+    assertEquals("111111", panGeneratorUtils.retrieveIin("Verve"));
 
 
   }
 
   @Test
   void testGenerateRandomDigits() {
-    assertNotNull(panUtils.generateRandomNumbers(10));
+    assertNotNull(panGeneratorUtils.generateRandomNumbers(10));
 
 
   }
@@ -45,7 +45,7 @@ class PanUtilsTest {
   @Test
   void testGenerateChecksumDigit() {
 
-    assertEquals("6", panUtils.generateLuhnCheckDigit("111111555555555"));
+    assertEquals("6", panGeneratorUtils.generateLuhnCheckDigit("111111555555555"));
 
 
   }
@@ -53,12 +53,12 @@ class PanUtilsTest {
   @Test
   void testIsValidMobileNumber() {
 
-    assertTrue(panUtils.isMobileNumberValid("08011111111"));
+    assertTrue(panGeneratorUtils.isMobileNumberValid("08011111111"));
   }
 
   @Test
   void testIsNotValidMobileNumber() {
-    assertFalse(panUtils.isMobileNumberValid("1111111111"));
+    assertFalse(panGeneratorUtils.isMobileNumberValid("1111111111"));
   }
 
   @Test
@@ -71,13 +71,13 @@ class PanUtilsTest {
         .build();
 
 
-    assertEquals("ResponseEntity", panUtils.processResponse(Mono.just(responseDto))
+    assertEquals("ResponseEntity", panGeneratorUtils.processResponse(Mono.just(responseDto))
         .getClass().getSimpleName());
   }
 
 
   @Test
   void testGenerateTransactionId() {
-    assertNotNull(panUtils.generateTransactionId());
+    assertNotNull(panGeneratorUtils.generateTransactionId());
   }
 }

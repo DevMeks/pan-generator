@@ -3,9 +3,10 @@ package com.devmeks.pangenerator.util;
 
 import com.devmeks.pangenerator.config.BinProperties;
 import com.devmeks.pangenerator.dto.response.ResponseDto;
-import com.devmeks.pangenerator.exception.model.ApiError;
+import com.devmeks.pangenerator.exception.ApiError;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -22,9 +24,10 @@ import java.util.Objects;
  */
 @Component
 @Slf4j
-public final class PanUtils {
+public final class PanGeneratorUtils {
 
   private static final SecureRandom RANDOM = new SecureRandom();
+  private static final long OTP_VALIDITY_MINUTES = 5;
 
   private final BCryptPasswordEncoder passwordEncoder;
 
@@ -38,7 +41,7 @@ public final class PanUtils {
    * @param binProperties the bin properties
    */
   @Autowired
-  public PanUtils(BinProperties binProperties, BCryptPasswordEncoder passwordEncoder) {
+  public PanGeneratorUtils(BinProperties binProperties, BCryptPasswordEncoder passwordEncoder) {
     this.binProperties = binProperties;
     this.passwordEncoder = passwordEncoder;
   }
@@ -215,6 +218,13 @@ public final class PanUtils {
     responseDto.setResponseStatus(ResponseStatus.INVALID_REQUEST);
     return Mono.just(responseDto);
 
+  }
+
+
+  public static OTP generateOTP(int length){
+    String otp  = RandomStringUtils.randomAlphanumeric(length);
+    LocalDateTime expiryDateTime = LocalDateTime.now().plusMinutes(OTP_VALIDITY_MINUTES);
+    return new OTP(otp,expiryDateTime);
   }
 
 

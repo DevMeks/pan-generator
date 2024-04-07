@@ -1,7 +1,6 @@
 package com.devmeks.pangenerator.exception;
 
 import com.devmeks.pangenerator.dto.response.ResponseDto;
-import com.devmeks.pangenerator.exception.model.ApiError;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;

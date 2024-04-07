@@ -2,7 +2,7 @@ package com.devmeks.pangenerator.dto.response;
 
 
 import com.devmeks.pangenerator.dto.BaseDto;
-import com.devmeks.pangenerator.exception.model.ApiError;
+import com.devmeks.pangenerator.exception.ApiError;
 import com.devmeks.pangenerator.model.Pan;
 import com.devmeks.pangenerator.util.enums.ResponseStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
